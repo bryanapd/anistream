@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Grid, Heading, HStack, Img, Spacer, Spinner, Stack, Tag, Text, VStack } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
+import { AppSpacer } from '../../components/Header'
 import { useGetAnimeDetailsQuery } from '../../features/apiSlice'
 import AppLayout from '../../layout/AppLayout'
 
@@ -36,9 +37,9 @@ const AnimeCard = ({ animeImg, animeTitle, genres, otherNames, releasedDate, sta
       <Button size="sm" rounded="sm" mr={1} onClick={() => [...episodesList].sort((a, b) => a - b )}>asc</Button>
       <Button size="sm" rounded="sm">desc</Button>
     </Flex>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(4rem, 1fr))', gap: '2rem' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(.5rem, 1fr))', gap: '2rem' }}>
       {
-        episodesList.map(episode => <Button rounded="lg" bg="yellow.400">{episode.episodeNum}</Button>)
+        (episodesList || []).map(episode => <Button rounded="lg" bg="yellow.400" onClick={() => Router.push(`/anime/episode/${episode.episodeId}`)}>{episode.episodeNum}</Button> )
       }
     </div>
   </Box>
@@ -54,6 +55,7 @@ const Anime = ({ }) => {
     <AppLayout>
       { !details && isLoading && <Spinner size="sm" /> }
       { details && <AnimeCard {...details} /> }
+      <AppSpacer />
     </AppLayout>
   )
 }

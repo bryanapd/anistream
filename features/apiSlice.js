@@ -15,6 +15,15 @@ export const apiSlice = createApi({
     }),
     getAnimeDetails: builder.query({
       query: id => `anime-details/${id}`
+    }),
+    getAnimeEpisode: builder.query({
+      query: id => ({
+        url: `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${id}`,
+        method: 'GET',
+        params: {
+          server: 'gogocdn'
+        }
+      })
     })
   })
 })
@@ -23,5 +32,6 @@ export const {
   useGetPopularAnimeQuery,
   useGetRecentReleaseQuery,
   useGetAnimeSearchQuery,
-  useGetAnimeDetailsQuery
+  useGetAnimeDetailsQuery,
+  useGetAnimeEpisodeQuery
 } = apiSlice
