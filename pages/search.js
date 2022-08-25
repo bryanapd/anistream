@@ -5,7 +5,7 @@ import useDebounce from "../hooks/useDebounce";
 import AppLayout from "../layout/AppLayout";
 
 
-const Search = ({ }) => {
+const Search = props => {
   const [search, setSearch] = useState('')
   const debouncedSearchQuery = useDebounce(search, 1000)
 
@@ -21,3 +21,5 @@ const Search = ({ }) => {
     </AppLayout>
   )
 }
+
+export default Search

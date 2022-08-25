@@ -24,10 +24,6 @@ const AppLayout = ({ children, withFooter }) => {
 
   const { data: searchResult, isLoading, isFetching, isError } = useGetAnimeSearchQuery(search, { skip: debouncedSearchQuery == '' })
 
-  const searchHandler = e => {
-    setSearch(e.target.value)
-  }
-
   if(isError){
     console.log('Search error?', isError)
   }else if(searchResult){
@@ -36,11 +32,17 @@ const AppLayout = ({ children, withFooter }) => {
     console.log('is loading', isLoading)
   }
 
+  const searchHandler = e => {
+    setSearch(e.target.value)
+  }
   const handleShowMore = () => {
     setShowMore(!showMore)
   }
-
   const numberOfItems = showMore ? searchResult.length : 6
+  
+  const focusHandler = () => {
+    inputRef.current.focus
+  }
 
   return(
     <Fragment>
@@ -67,7 +69,7 @@ const AppLayout = ({ children, withFooter }) => {
             <Flex flexDir="column" pos="absolute" bg="blackAlpha.800">
               { 
                 searchResult && searchResult.slice(0, numberOfItems).map(result => (
-                  <HStack w="500px" p={2} _hover={{ bg: 'yellow.400' }} cursor="pointer">
+                  <HStack key={result.animeId} w="500px" p={2} _hover={{ bg: 'yellow.400' }} cursor="pointer" onClick={() => router.push(`/anime/${result.animeId}`)}>
                     <Img boxSize="60px" src={result.animeImg} objectFit="cover" />
                     <Box>
                       <Heading size="xs" color="yellow.500" mb={2}>{result.animeTitle}</Heading>
