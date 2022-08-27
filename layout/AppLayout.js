@@ -1,12 +1,12 @@
 import { Fragment, useState, useEffect, useRef } from "react"
 import { useRouter } from "next/router"
-import { Box, Button, Container, Flex, Heading, HStack, IconButton, Img, Input, Spacer, Spinner, Text } from "@chakra-ui/react"
+import { Box, Button, Container, Flex, Heading, HStack, IconButton, Img, Input, Spacer, Spinner, Text, useColorMode } from "@chakra-ui/react"
 
 import { AppBrand, AppHeader, AppLinks, AppSpacer } from "../components/Header"
 
 import useDebounce from "../hooks/useDebounce"
 import { useGetAnimeSearchQuery } from "../features/apiSlice"
-import { IoChevronDown, IoChevronUp } from "react-icons/io5"
+import { IoChevronDown, IoChevronUp, IoMoonOutline, IoSunnyOutline } from "react-icons/io5"
 
 
 const routes = [
@@ -17,6 +17,7 @@ const routes = [
 ]
 const AppLayout = ({ children, withFooter }) => {
   const router = useRouter()
+  const { colorMode, toggleColorMode } = useColorMode()
   const [search, setSearch] = useState('')
   const [showMore, setShowMore] = useState(false)
   const debouncedSearchQuery = useDebounce(search, 2000)
@@ -81,16 +82,15 @@ const AppLayout = ({ children, withFooter }) => {
               {searchResult && searchResult.length >= 6 && (
                 <Button bg="yellow.500" rounded={0} onClick={handleShowMore}  rightIcon={showMore ? <IoChevronUp size={20} /> : <IoChevronDown size={20} />}>
                   { showMore ? 'Show less' : 'Show more' }
-                </Button> 
-              )}
+                </Button> )
+              }
             </Flex>
         </Box>
+        <IconButton icon={ colorMode == 'light' ? <IoMoonOutline /> : <IoSunnyOutline /> } onClick={toggleColorMode} />
       </AppHeader>
       <AppSpacer />
       <Box minH="75vh">
-        <Container maxW="container.xl">
         { children }
-        </Container>
       </Box>
     </Fragment>
   )

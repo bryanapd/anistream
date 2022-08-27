@@ -13,7 +13,7 @@ export const AppHeader = ({ children, boxStyle, ...rest }) => (
       borderTopWidth={2} 
       backdropFilter="blur(20px)"
       borderColor="transparent"
-      py={2} pos="relative" w="full" zIndex="1000"
+      py={2} pos="fixed" w="full" zIndex="1000"
       {...boxStyle}>
       <Container maxW="container.xl">
         <HStack {...rest}>

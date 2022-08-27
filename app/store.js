@@ -1,6 +1,6 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
 import { apiSlice } from "../features/apiSlice";
-
 import episodeReducer from '../features/episodeSlice'
 
 const store = configureStore({ 

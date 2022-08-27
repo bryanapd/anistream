@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const apiSlice = createApi({
   reducerPath: 'apiSlice',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://gogoanime.herokuapp.com/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://consumet-api.herokuapp.com/' }),
   endpoints: builder => ({
     getPopularAnime: builder.query({
       query: () => 'popular'
@@ -13,12 +13,17 @@ export const apiSlice = createApi({
     getAnimeSearch: builder.query({
       query: query => `search?keyw=${query}`
     }),
-    getAnimeDetails: builder.query({
-      query: id => `anime-details/${id}`
+    getAnimeDetailsById: builder.query({
+      query: id => ({
+        url: `meta/anilist/info/${id}`,
+        params: {
+          provider: 'zoro'
+        }
+      })
     }),
     getAnimeEpisode: builder.query({
       query: id => ({
-        url: `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${id}`,
+        url: `anime/gogoanime/watch/${id}`,
         method: 'GET',
         params: {
           server: 'gogocdn'
@@ -32,6 +37,6 @@ export const {
   useGetPopularAnimeQuery,
   useGetRecentReleaseQuery,
   useGetAnimeSearchQuery,
-  useGetAnimeDetailsQuery,
+  useGetAnimeDetailsByIdQuery,
   useGetAnimeEpisodeQuery
 } = apiSlice
