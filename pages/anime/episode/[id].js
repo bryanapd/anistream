@@ -1,28 +1,41 @@
-import { Heading } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import Hls from "hls.js";
 import { useRouter } from "next/router";
-import { useGetAnimeEpisodeQuery } from "../../../features/apiSlice";
+import { useGetAnimeEpisodeByIdQuery } from "../../../features/apiSlice";
 import { useState, useEffect } from "react";
 
 import AppLayout from "../../../layout/AppLayout";
 import Player from "../../../components/ArtPlayer";
 import { AppSpacer } from "../../../components/Header";
 
+import { IoSettings } from "react-icons/io5";
+
 const Episode = ({ }) => {
   const router = useRouter()
-  const { data: episode, isLoading, isError } = useGetAnimeEpisodeQuery(router.query.id, { skip: !router.query.id })
+  const { data: episode, isLoading, isError } = useGetAnimeEpisodeByIdQuery(router.query.id, { skip: !router.query.id })
 
-  var source
+  var source 
+  var subtitle
+
+
+  if(episode && subtitle == null) {
+    episode.subtitles
+      .filter(f => f.lang == 'English')
+      .map(filteredSub => {
+        subtitle = filteredSub
+      })
+    console.log("subs", subtitle)
+  }
 
   if(episode && !isLoading) {
     const { url } = episode.sources[0]
     source = url
-    console.log(source)
+    console.log(episode)
+    console.log('new source', source)
   }
 
   return(
-    <AppLayout>
-      <Heading>hello {router.query.id}</Heading>
+    <Box>
       {
         episode && (
           <Player
@@ -37,7 +50,7 @@ const Episode = ({ }) => {
             autoSize: true,
             screenshot: true,
             setting: true,
-            // loop: true,
+            loop: true,
             playbackRate: true,
             aspectRatio: true,
             fullscreen: true,
@@ -47,6 +60,13 @@ const Episode = ({ }) => {
             // lang: "en",
             moreVideoAttr: {
               crossOrigin: "anonymous"
+            },
+            subtitle: {
+              url: subtitle.url,
+              type: 'vtt',
+              style: {
+                color: '#ffffff',
+              },
             },
             customType: {
               m3u8: function (video, url) {
@@ -66,16 +86,15 @@ const Episode = ({ }) => {
             },
           }}
             style={{
-              width: "1000px",
-              height: "700px",
+              width: "100vw",
+              height: "100vh",
               margin: "60px auto 0",
             }}
             // getInstance={(art) => console.log(art)}
           />
         )
       }
-      <AppSpacer />
-    </AppLayout>
+    </Box>
   )
 }
 export default Episode

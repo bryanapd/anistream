@@ -47,7 +47,7 @@ const AppLayout = ({ children, withFooter }) => {
 
   return(
     <Fragment>
-      <AppHeader boxStyle={{ bg: 'yellow.500' }}>
+      <AppHeader>
         <AppBrand title="AniStream" />
         <AppLinks
           routes={routes}
@@ -88,7 +88,7 @@ const AppLayout = ({ children, withFooter }) => {
         </Box>
         <IconButton icon={ colorMode == 'light' ? <IoMoonOutline /> : <IoSunnyOutline /> } onClick={toggleColorMode} />
       </AppHeader>
-      <AppSpacer />
+      {/* <AppSpacer /> */}
       <Box minH="75vh">
         { children }
       </Box>

@@ -11,7 +11,7 @@ export const AppHeader = ({ children, boxStyle, ...rest }) => (
   <Box>
     <Box 
       borderTopWidth={2} 
-      backdropFilter="blur(20px)"
+      // backdropFilter="blur(20px)"
       borderColor="transparent"
       py={2} pos="fixed" w="full" zIndex="1000"
       {...boxStyle}>

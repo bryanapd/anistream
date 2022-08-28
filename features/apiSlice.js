@@ -21,12 +21,12 @@ export const apiSlice = createApi({
         }
       })
     }),
-    getAnimeEpisode: builder.query({
+    getAnimeEpisodeById: builder.query({
       query: id => ({
-        url: `anime/gogoanime/watch/${id}`,
+        url: `meta/anilist/watch/${id}`,
         method: 'GET',
         params: {
-          server: 'gogocdn'
+          provider: 'zoro'
         }
       })
     })
@@ -38,5 +38,5 @@ export const {
   useGetRecentReleaseQuery,
   useGetAnimeSearchQuery,
   useGetAnimeDetailsByIdQuery,
-  useGetAnimeEpisodeQuery
+  useGetAnimeEpisodeByIdQuery
 } = apiSlice

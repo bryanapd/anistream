@@ -7,7 +7,7 @@ export default function Player({ option, getInstance, ...rest }) {
     useEffect(() => {
         const art = new Artplayer({
             ...option,
-            container: artRef.current,
+            container: artRef.current
         });
 
         if (getInstance && typeof getInstance === 'function') {
