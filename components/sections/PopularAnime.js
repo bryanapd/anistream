@@ -1,9 +1,38 @@
-import { Box, Flex, Grid, Heading, Img, Spinner } from "@chakra-ui/react";
+import { Box, Container, Flex, Grid, Heading, Img, Spinner } from "@chakra-ui/react";
 import Router from "next/router";
 import { useState } from "react";
 
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { useGetPopularAnimeQuery } from "../../features/apiSlice";
+
+const options = {
+  type: 'loop',
+  rewind: true, 
+  rewindByDrag: true, 
+  perPage: 4, 
+  arrows: false, 
+  pagination: false, 
+  drag: 'free', 
+  gap: '1rem', 
+  breakpoints: {
+    500: {
+      perPage: 1,
+      perMove: 1
+    },
+    723: {
+      perPage: 2,
+      perMove: 2
+    },
+    935: {
+      perPage: 3,
+      perMove: 3
+    },
+    1247: {
+      perPage: 4,
+      perMove: 4
+    }
+  }
+}
 
 export const PopularCard = ({ image, title, id, genres = [], rating, cover, status, totalEpisodes, duration, type, releaseDate, trailer }) => {
   const [hover, setHover] = useState(false)
@@ -42,39 +71,13 @@ const PopularAnime = ({ title = 'Popular Anime', ...rest }) => {
 
   return(
     <Box {...rest}>
-      <Heading size="md" mb={-8} mx={12}>{title}</Heading>
-      { !popular && isLoading && <Spinner size="sm" /> }
-      <Splide 
-        options={{ 
-          type: 'loop',
-          rewind: true, 
-          rewindByDrag: true, 
-          perPage: 4, 
-          arrows: false, 
-          pagination: false, 
-          drag: 'free', 
-          gap: '1rem', 
-          breakpoints: {
-            500: {
-              perPage: 1,
-              perMove: 1
-            },
-            723: {
-              perPage: 2,
-              perMove: 2
-            },
-            935: {
-              perPage: 3,
-              perMove: 3
-            },
-            1247: {
-              perPage: 4,
-              perMove: 4
-            }
-          }
-        }}>
-        { popular && popular.map(item => <SplideSlide key={item.animeId}> <PopularCard {...item} /> </SplideSlide> ) }
-      </Splide>
+      <Container maxW="95vw">
+        <Heading size="md" mb={-8} mx={12}>{title}</Heading>
+        { !popular && isLoading && <Spinner size="sm" /> }
+        <Splide options={options}>
+          { popular && popular.map(item => <SplideSlide key={item.animeId}> <PopularCard {...item} /> </SplideSlide> ) }
+        </Splide>
+      </Container>
     </Box>
   )
 }
