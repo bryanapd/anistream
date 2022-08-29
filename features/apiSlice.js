@@ -5,13 +5,24 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'https://consumet-api.herokuapp.com/' }),
   endpoints: builder => ({
     getPopularAnime: builder.query({
-      query: () => 'popular'
+      query: () => 'meta/anilist/popular'
+    }),
+    getTrendingAnime: builder.query({
+      query: () => 'meta/anilist/popular'
     }),
     getRecentRelease: builder.query({
       query: () => 'recent-release'
     }),
     getAnimeSearch: builder.query({
-      query: query => `search?keyw=${query}`
+      query: query => `meta/anilist/${query}`
+    }),
+    getRecentEpisodes: builder.query({
+      query: () => ({
+        url: 'meta/anilist/recent-episodes',
+        params: {
+          provider: 'zoro'
+        }
+      })
     }),
     getAnimeDetailsById: builder.query({
       query: id => ({
@@ -35,8 +46,9 @@ export const apiSlice = createApi({
 
 export const {
   useGetPopularAnimeQuery,
-  useGetRecentReleaseQuery,
+  useGetTrendingAnimeQuery,
   useGetAnimeSearchQuery,
+  useGetRecentEpisodesQuery,
   useGetAnimeDetailsByIdQuery,
   useGetAnimeEpisodeByIdQuery
 } = apiSlice

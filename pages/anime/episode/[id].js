@@ -1,14 +1,12 @@
 import { Box, Heading } from "@chakra-ui/react";
-import Hls from "hls.js";
 import { useRouter } from "next/router";
 import { useGetAnimeEpisodeByIdQuery } from "../../../features/apiSlice";
 import { useState, useEffect } from "react";
 
 import AppLayout from "../../../layout/AppLayout";
-import Player from "../../../components/ArtPlayer";
 import { AppSpacer } from "../../../components/Header";
+import { Player, Hls, DefaultUi, DefaultControls } from "@vime/react";
 
-import { IoSettings } from "react-icons/io5";
 
 const Episode = ({ }) => {
   const router = useRouter()
@@ -24,7 +22,7 @@ const Episode = ({ }) => {
       .map(filteredSub => {
         subtitle = filteredSub
       })
-    console.log("subs", subtitle)
+    console.log("subs", subtitle.url)
   }
 
   if(episode && !isLoading) {
@@ -38,60 +36,20 @@ const Episode = ({ }) => {
     <Box>
       {
         episode && (
-          <Player
-            option={{
-            url: source,
-            // title: "【新海诚动画】『秒速5センチメートル』",
-            // poster: url + "/image/one-more-time-one-more-chance-poster.jpg",
-            volume: 0.5,
-            muted: false,
-            autoplay: true,
-            pip: true,
-            autoSize: true,
-            screenshot: true,
-            setting: true,
-            loop: true,
-            playbackRate: true,
-            aspectRatio: true,
-            fullscreen: true,
-            fullscreenWeb: true,
-            mutex: true,
-            theme: "#ffad00",
-            // lang: "en",
-            moreVideoAttr: {
-              crossOrigin: "anonymous"
-            },
-            subtitle: {
-              url: subtitle.url,
-              type: 'vtt',
-              style: {
-                color: '#ffffff',
-              },
-            },
-            customType: {
-              m3u8: function (video, url) {
-                if (Hls.isSupported()) {
-                    const hls = new Hls();
-                    hls.loadSource(url);
-                    hls.attachMedia(video);
-                } else {
-                  const canPlay = video.canPlayType('application/vnd.apple.mpegurl');
-                  if (canPlay === 'probably' || canPlay == 'maybe') {
-                    video.src = url;
-                  } else {
-                    art.notice.show = 'Does not support playback of m3u8';
-                  }
-                }
-              },
-            },
-          }}
-            style={{
-              width: "100vw",
-              height: "100vh",
-              margin: "60px auto 0",
-            }}
-            // getInstance={(art) => console.log(art)}
-          />
+          <Player theme="dark">
+            <Hls crossOrigin>
+              <source src={source} type="application/x-mpegURL" />
+              <track 
+                default 
+                kind="subtitles"
+                src={subtitle.url} 
+                srcLang="en" 
+                label={subtitle.lang} />
+            </Hls>
+            <DefaultUi noControls>
+              <DefaultControls hideOnMouseLeave activeDuration={2000} />
+            </DefaultUi>
+          </Player>
         )
       }
     </Box>

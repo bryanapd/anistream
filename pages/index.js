@@ -8,8 +8,7 @@ import PopularAnime from '../components/sections/PopularAnime'
 export default function Home({ title = 'AniStream'}) {
   return (
     <AppLayout>
-      <PopularAnime mt={10} />
-      <RecentRelease mt={10} />
+      <PopularAnime pt={100} />
     </AppLayout>
   )
 }

@@ -1,5 +1,7 @@
 import Head from 'next/head'
+import { useState } from 'react'
 import Router, { useRouter } from 'next/router'
+
 import { 
   Box, Button, Container, Divider, Flex, Grid, Heading, 
   HStack, Img, Spacer, Spinner, Stack, Switch, Tag, Text, VStack 
@@ -9,9 +11,29 @@ import AppLayout from '../../layout/AppLayout'
 import { AppSpacer } from '../../components/Header'
 
 import { useGetAnimeDetailsByIdQuery, useGetAnimeEpisodeByIdQuery} from '../../features/apiSlice'
-import { useState } from 'react'
+
+import { Splide, SplideSlide  } from '@splidejs/react-splide'
 
 
+
+const EpisodeCard = ({ id, image, title, number, blur }) => (
+  <Box>
+    <Img 
+      h="23vh" w="full"
+      objectFit="cover"  
+      src={image} 
+      alt={`${title} cover`} 
+      filter={ blur ? 'blur(4px)' : ''} 
+      onClick={() => Router.push(`/anime/episode/${id}`)}
+      mb={2}
+      cursor="pointer" 
+      />
+    <Flex alignItems="flex-end" justifyContent="space-between">
+      <Heading size="xs">{`Ep. ${number}`}</Heading>
+      <Heading size="xs" fontWeight="medium">{title}</Heading>
+    </Flex>
+  </Box>
+)
 
 const AnimeCard = ({ anime, blur, setBlur }) => (
   <Box pos="relative" pt={200}>
@@ -72,35 +94,24 @@ const AnimeCard = ({ anime, blur, setBlur }) => (
           <Text fontSize="sm" whiteSpace="pre-line" mb={10}>{anime.description.replace(/<br\s*[\/]?>/gi, '' || '')}</Text>
         </Flex>
       </Grid>
-      <Flex flexDir="column" mt={20}>
-        <Switch defaultChecked={true} colorScheme="facebook" alignSelf="flex-end" onChange={() => setBlur(!blur)} mb={4}>Blur</Switch>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-          {
-            anime.episodes.map(episode => (
-              <Box key={episode.id}>
-                <Img 
-                  h="23vh" w="full"
-                  objectFit="cover"  
-                  src={episode.image} 
-                  alt={`${episode.title} cover`} 
-                  filter={ blur ? 'blur(4px)' : ''} 
-                  onClick={() => Router.push(`/anime/episode/${episode.id}`)}
-                  mb={2} />
-                <Flex justifyContent="space-between">
-                  <Heading size="sm">{`Ep. ${episode.number}`}</Heading>
-                  <Heading size="sm" fontWeight="medium">{episode.title}</Heading>
-                </Flex>
-              </Box>
-            ))
-          }
-        </div>
-      </Flex>
     </Container>
+    <Flex flexDir="column" mt={20}>
+      {/* <Switch m={100} defaultChecked={false} colorScheme="facebook" alignSelf="flex-end" onChange={() => setBlur(!blur)} mb={4}>Blur</Switch> */}
+      <Splide options={{ perPage: 4, arrows: false, pagination: false, drag: 'free', gap: '1.5rem' }}>
+        {
+          anime.episodes.map(episode => (
+            <SplideSlide key={episode.id}>
+              <EpisodeCard {...episode} />
+            </SplideSlide>
+          ))
+        }
+      </Splide>
+    </Flex>
   </Box>
 )
 
 const Anime = ({ }) => {
-  const [blur, setBlur] = useState(true)
+  const [blur, setBlur] = useState(false)
   const router = useRouter()
   const { data: details, isLoading, isError } = useGetAnimeDetailsByIdQuery(router.query.id, { skip: !router.query.id })
 
