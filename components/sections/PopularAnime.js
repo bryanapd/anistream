@@ -1,15 +1,17 @@
-import { Box, Container, Flex, Grid, Heading, Img, Spinner } from "@chakra-ui/react";
+import { Box, Container, Flex, Grid, Heading, HStack, IconButton, Img, Spacer, Spinner } from "@chakra-ui/react";
 import Router from "next/router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { useGetPopularAnimeQuery } from "../../features/apiSlice";
+import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 
 const options = {
   type: 'loop',
   rewind: true, 
   rewindByDrag: true, 
   perPage: 4, 
+  lazyLoad: true,
   arrows: false, 
   pagination: false, 
   drag: 'free', 
@@ -37,7 +39,7 @@ const options = {
 export const PopularCard = ({ image, title, id, genres = [], rating, cover, status, totalEpisodes, duration, type, releaseDate, trailer }) => {
   const [hover, setHover] = useState(false)
   return(
-    <Flex minH="23vh" p={3} alignItems="flex-end" justifyContent="space-between" transition="all 300ms ease" _hover={{ transform: 'scale(1.03)' }} cursor="pointer" pos="relative" onClick={() => Router.push(`/anime/${id}`)}>
+    <Flex minH="25vh" p={3} alignItems="flex-end" justifyContent="space-between" transition="all 300ms ease" _hover={{ transform: 'scale(1.03)' }} cursor="pointer" pos="relative" onClick={() => Router.push(`/anime/${id}`)}>
       <Img 
         pos="absolute" h="full" w="full"
         objectFit="cover" objectPosition="center"
@@ -59,7 +61,9 @@ export const PopularCard = ({ image, title, id, genres = [], rating, cover, stat
 }
 
 const PopularAnime = ({ title = 'Popular Anime', ...rest }) => {
+
   var popular
+  const splideRef = useRef()
   const { data, isLoading, isError } = useGetPopularAnimeQuery({})
 
   if(isError){
@@ -69,12 +73,29 @@ const PopularAnime = ({ title = 'Popular Anime', ...rest }) => {
     popular = results
   }
 
+  const handleSplideNext = () => {
+    if(splideRef){
+      splideRef.current.go('>')
+    }
+  }
+  const handleSplidePrev = () => {
+    if(splideRef){
+      splideRef.current.go('<')
+    }
+  }
+
+
   return(
     <Box {...rest}>
       <Container maxW="95vw">
-        <Heading size="md" mb={-8} mx={12}>{title}</Heading>
+        <HStack pos="relative" zIndex="999999" mb={-8} mx={12}>
+          <Heading size="md">{title}</Heading>
+          <Spacer />
+          <IconButton size="lg" variant="outline" rounded="2xl" icon={<IoArrowBack />} onClick={handleSplidePrev} />
+          <IconButton size="lg" variant="outline" rounded="2xl" icon={<IoArrowForward />} onClick={handleSplideNext} />
+        </HStack>
         { !popular && isLoading && <Spinner size="sm" /> }
-        <Splide options={options}>
+        <Splide ref={splideRef} options={options}>
           { popular && popular.map(item => <SplideSlide key={item.animeId}> <PopularCard {...item} /> </SplideSlide> ) }
         </Splide>
       </Container>

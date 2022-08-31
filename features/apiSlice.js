@@ -8,7 +8,7 @@ export const apiSlice = createApi({
       query: () => 'meta/anilist/popular'
     }),
     getTrendingAnime: builder.query({
-      query: () => 'meta/anilist/popular'
+      query: () => 'meta/anilist/trending'
     }),
     getRecentRelease: builder.query({
       query: () => 'recent-release'

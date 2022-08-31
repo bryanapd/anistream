@@ -7,6 +7,7 @@ import { AppBrand, AppHeader, AppLinks, AppSpacer } from "../components/Header"
 import useDebounce from "../hooks/useDebounce"
 import { useGetAnimeSearchQuery } from "../features/apiSlice"
 import { IoChevronDown, IoChevronUp, IoMoonOutline, IoSunnyOutline } from "react-icons/io5"
+import Head from "next/head"
 
 
 const routes = [
@@ -47,6 +48,9 @@ const AppLayout = ({ children, withFooter }) => {
 
   return(
     <Fragment>
+      <Head>
+        <script src="path-to-the-script/splide-extension-grid.min.js"></script>
+      </Head>
       <AppHeader>
         <AppBrand title="AniStream" />
         <AppLinks
@@ -89,7 +93,13 @@ const AppLayout = ({ children, withFooter }) => {
         <IconButton icon={ colorMode == 'light' ? <IoMoonOutline /> : <IoSunnyOutline /> } onClick={toggleColorMode} />
       </AppHeader>
       {/* <AppSpacer /> */}
-      <Box minH="75vh">
+      <Box css={{ 
+        backdropFilter: 'blur(16px) saturate(180%)',
+        '&:-webkit-backdrop-filter': 'blur(16px) saturate(180%)',
+        backgroundColor: 'rgba(17, 25, 40, 0.75)',
+        borderRadius: '12px',
+        border: '1px solid rgba(255, 255, 255, 0.125)'
+      }} minH="75vh">
         { children }
       </Box>
     </Fragment>

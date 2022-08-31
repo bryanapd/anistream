@@ -28,8 +28,8 @@ const EpisodeCard = ({ id, image, title, number, blur }) => (
       mb={2}
       cursor="pointer" 
       />
-    <Flex alignItems="flex-end" justifyContent="space-between">
-      <Heading size="xs">{`Ep. ${number}`}</Heading>
+    <Flex alignItems="flex-start" justifyContent="space-between">
+      <Heading minW="3rem" size="xs" mr={4}>{`Ep. ${number}`}</Heading>
       <Heading size="xs" fontWeight="medium">{title}</Heading>
     </Flex>
   </Box>
