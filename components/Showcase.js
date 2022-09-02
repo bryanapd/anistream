@@ -1,6 +1,6 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Router, { useRouter } from "next/router";
-
+import styles from '../styles/Showcase.module.css'
 import { 
   Box, Text, Heading, Container, Img, Spinner, Stack, 
   HStack, Flex, Divider, Tag, Button, IconButton,
@@ -12,6 +12,7 @@ import YouTube from "react-youtube";
 
 import { useGetAnimeDetailsByIdQuery } from "../features/apiSlice";
 import { IoVolumeHigh, IoVolumeHighOutline } from "react-icons/io5";
+
 
 const options = {
   // type: 'loop',
@@ -51,7 +52,7 @@ const ItemCard = ({
   genres = [], totalEpisodes, season, studios = [], characters = [],
   boxStyle, ...rest
 }) => {
-
+  const playerRef = useRef(null)
   const [state, setState] = useState({
     isLoading: true,
     isMuted: true
@@ -60,11 +61,21 @@ const ItemCard = ({
   const backgroundHandler = () => {
     Router.push(`/anime/${id}`)
   }
-  const muteHandler = () => {
-    setState({
-      isMuted: 0
-    })
-  }
+  // const handleMute = () => {
+  //   // if(playerRef.current.internalPlayer.isMuted() == true) {
+  //   //   return playerRef.current.internalPlayer.unMute()
+  //   // }
+  //   playerRef.current.internalPlayer.mute()
+  //   setState({
+  //     isMuted: true
+  //   })
+  // }
+  // const handleUnmute = () => {
+  //   if(playerRef != null) {
+  //     playerRef.current.internalPlayer.unMute()
+  //   }
+  //   setState({ isMuted: false })
+  // }
 
   useEffect(() => {
     setTimeout(() => {
@@ -74,58 +85,23 @@ const ItemCard = ({
     }, 3000);
   }, [state.isLoading])
 
+  console.log(playerRef, 'ref')
+
   return(
     <Flex flexDir="column" alignItems="start" justifyContent="flex-end" minH="50vh" h="75vh" pos="relative" {...boxStyle}>
-      
-        {
-          trailer != null && !state.isLoading ? (
-            <Box pos="absolute" w="100%" pb="56.25%" overflow="hidden" h={0}>
-              <iframe 
-                style={iframeStyle} 
-                src={`https://www.youtube.com/embed/${trailer.id}?enablejsapi=1&wmode=opaque&autoplay=1&controls=0&playlist=${trailer.id}&loop=1&modestbranding=1&mute=${state.isMuted}`} 
-                frameborder="0"
-                allow="autoplay"
-                allowFullScreen 
-                />
-            </Box>
-          )
-            :
-            <Img pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
-        }
-      {/* {
-        trailer != null && state ? 
-        // <AspectRatio pos="absolute" h="100%" w="100%" ratio={16 / 9}>
-          <YouTube 
-            style={{
-              position: 'absolute',
-              height: '100%',
-              border: '2px solid red',
-              width: '100%',
-              // top: 0,
-              // bottom: 0,
-              // left: 0,
-              // right: 0
-            }}
-            videoId={trailer.id}
-            
-            opts={{
-            height: '100%',
-            width: '100%',
-            playerVars: {
-              autoplay: 1,
-              rel: 0,
-              loop: 1,
-              modestbranding: 1,
-              playlist: trailer.id,
-              controls: 0,
-              mute: 0,
-              showinfo: 0,
-            },
-          }} />
-        // </AspectRatio>
-        : <Img pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
-      } */}
-      {/* <Box pos="absolute" h="full" w="full" bgGradient="linear-gradient(180deg, rgba(22, 21, 26, 0) 0%, rgba(22, 21, 26, 0.9) 72.92%, #16151A 100%)" /> */}
+      <Img 
+        pos="absolute" 
+        h="full" w="full" 
+        top={0} left={0} 
+        objectFit="cover" 
+        objectPosition="center" 
+        alt={`${title.romaji} cover`} 
+        src={cover} />
+      <Box 
+        pos="absolute" 
+        h="full" w="full" 
+        bgGradient="linear-gradient(180deg, rgba(22, 21, 26, 0) 0%, rgba(22, 21, 26, 0.9) 72.92%, #16151A 100%)" 
+        />
       <Container display="flex" maxW="container.xl" zIndex="99" pos="relative">
         <Stack flexDir={{ base: 'column-reverse', md: 'row' }} justifyContent="space-between" direction={{ base: 'column', md: 'row' }}>
           <Box maxW="60%">
@@ -147,8 +123,8 @@ const ItemCard = ({
           </Splide>
         </Stack>
         <Flex pos="absolute" bottom={5} right={5}>
-          <IconButton variant="ghost" onClick={backgroundHandler} icon={<HiOutlinePlay size="35px" />} />
-          <IconButton variant="ghost" onClick={muteHandler} icon={<IoVolumeHighOutline size="30px" />} />
+          {/* <IconButton variant="ghost" icon={<HiOutlinePlay size="35px" />} />
+          <IconButton variant="ghost" icon={<IoVolumeHighOutline size="30px" />} /> */}
         </Flex>
       </Container>
     </Flex>
@@ -157,7 +133,7 @@ const ItemCard = ({
 
 const Showcase = ({ }) => {
   const router = useRouter()
-  const { data: anime, isLoading, isError } = useGetAnimeDetailsByIdQuery(143270)
+  const { data: anime, isLoading, isError } = useGetAnimeDetailsByIdQuery(5680)
 
   if(isError){
     console.log('Showcase error?: ', isError)
@@ -173,3 +149,43 @@ const Showcase = ({ }) => {
 }
 
 export default Showcase
+
+
+{/* {
+  trailer != null && !state.isLoading ? (
+    <Box pos="absolute" w="100%" pb="56.25%" overflow="hidden" h={0}>
+      <iframe 
+        style={iframeStyle} 
+        src={`https://www.youtube.com/embed/${trailer.id}?enablejsapi=1&wmode=opaque&autoplay=1&controls=0&playlist=${trailer.id}&loop=1&modestbranding=1&mute=${state.isMuted}`} 
+        frameborder="0"
+        allow="autoplay"
+        allowFullScreen 
+        />
+    </Box>
+  )
+    :
+    <Img pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
+} */}
+
+// {
+//   trailer != null && state ? 
+//     <YouTube 
+//       videoId={trailer.id}
+//       className={styles.container}
+//       iframeClassName={styles.trailer}
+//       ref={playerRef}
+//       opts={{
+//       playerVars: {
+//         autoplay: 1,
+//         rel: 0,
+//         loop: 1,
+//         modestbranding: 1,
+//         playlist: trailer.id,
+//         controls: 0,
+//         // mute: 0,
+//         showinfo: 0,
+//       } 
+//     }} />
+//   : 
+//   <Img pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
+// }

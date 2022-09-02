@@ -8,10 +8,18 @@ export const apiSlice = createApi({
       query: () => 'meta/anilist/popular'
     }),
     getTrendingAnime: builder.query({
-      query: () => 'meta/anilist/trending'
+      query: () => ({
+        url: 'meta/anilist/trending',
+        params: {
+          perPage: 50
+        }
+      })
     }),
     getRecentRelease: builder.query({
       query: () => 'recent-release'
+    }),
+    getAnimeGenre: builder.query({
+      query: genre => `meta/anilist/${genre}`
     }),
     getAnimeSearch: builder.query({
       query: query => `meta/anilist/${query}`
@@ -47,6 +55,7 @@ export const apiSlice = createApi({
 export const {
   useGetPopularAnimeQuery,
   useGetTrendingAnimeQuery,
+  useGetAnimeGenreQuery,
   useGetAnimeSearchQuery,
   useGetRecentEpisodesQuery,
   useGetAnimeDetailsByIdQuery,

@@ -11,7 +11,9 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { Grid } from "@splidejs/splide-extension-grid";
 import { AutoScroll } from "@splidejs/splide-extension-auto-scroll";
 
-import { useGetRecentEpisodesQuery } from "../../features/apiSlice";
+import { ItemCard } from './RecentEpisodes'
+import { useGetTrendingAnimeQuery } from "../../features/apiSlice";
+
 
 
 const options = {
@@ -45,54 +47,12 @@ const options = {
   // }
 }
 
-export const ItemCard = ({ id, title, image, rating, color, episodeId, episodeTitle, episodeNumber, genres = [], status }) => {
-  const [hovered, setHovered] = useState(false)
-  return(
-    <Flex 
-      p={3} 
-      flexDir="column" alignItems="start" justifyContent="flex-end" 
-      minH="20vh" h="47vh" 
-      w="auto"
-      pos="relative"  
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      transition="all 300ms ease"
-      _hover={{
-        transform: 'scale(1.05)'
-      }}
-      onClick={() => Router.push(`/anime/${id}`)}
-      cursor="pointer">
-      <Img
-        src={image}
-        h="full"
-        w="full"
-        objectFit="cover"
-        pos="absolute"
-        top={0} left={0}
-        alt={`${title.romaji} image`}
-        />
-      {
-        hovered == false && (
-          <Box 
-            pos="absolute" h="full" w="full" 
-            bgGradient={`linear(to-b, transparent, rgb(10 22 37))`}
-            bottom={0} left={0}
-            />
-        )
-      } 
-      <Tag size="sm" bg="#436bf1" color="white" fontWeight="bold" rounded="0" zIndex="99" mb={2}>{ episodeId ? `Ep. ${episodeNumber}` : status }</Tag>
-      <Heading size="xs" zIndex="99" noOfLines={3}>{title.romaji}</Heading>
-    </Flex>
-  )
-}
-
-const RecentEpisodes = ({ title = 'Recent Release', boxStyle }) => {
+const TrendingAnime = ({ title = 'Trending Anime', boxStyle }) => {
   const ref = useRef()
   const [currentPage, setCurrentPage] = useState(1);
-  
 
   var episodes
-  const { data, isLoading, isError } = useGetRecentEpisodesQuery()
+  const { data, isLoading, isError } = useGetTrendingAnimeQuery()
 
   if(data){
     const { results } = data
@@ -109,7 +69,6 @@ const RecentEpisodes = ({ title = 'Recent Release', boxStyle }) => {
       ref.current.go('<')
     }
   }
-
   return(
     <Box {...boxStyle}>
       <Container maxW="95vw">
@@ -121,10 +80,14 @@ const RecentEpisodes = ({ title = 'Recent Release', boxStyle }) => {
           <IconButton size="lg" variant="outline" rounded="2xl" icon={<IoArrowForward />} onClick={handleSplideNext} />
         </HStack>
         <Splide extensions={{ Grid }} ref={ref} options={options}>
-          { episodes && episodes.map(episode => <SplideSlide key={episode.id}> <ItemCard {...episode} /> </SplideSlide>) }
+          { 
+            episodes && 
+            [...episodes]
+              .sort((a, b) => b.rating - a.rating)
+              .map(episode => <SplideSlide key={episode.id}> <ItemCard {...episode} /> </SplideSlide>) }
         </Splide>
       </Container>
     </Box>
   )
 }
-export default RecentEpisodes
+export default TrendingAnime

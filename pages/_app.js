@@ -3,6 +3,8 @@ import { Provider } from 'react-redux'
 import { theme } from '../theme'
 import store from '../app/store'
 
+import '../styles/globals.css'
+
 // // Default theme. ~960B
 import '@vime/core/themes/default.css';
 // // Optional light theme (extends default). ~400B
