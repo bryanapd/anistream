@@ -1,155 +1,119 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState, useCallback } from "react";
 import Router, { useRouter } from "next/router";
-import styles from '../styles/Showcase.module.css'
+import '../styles/Showcase.module.css'
 import { 
   Box, Text, Heading, Container, Img, Spinner, Stack, 
   HStack, Flex, Divider, Tag, Button, IconButton,
-  AspectRatio
+  AspectRatio, Grid, StackDivider
 } from "@chakra-ui/react";
 import { HiOutlinePlay } from 'react-icons/hi'
-import { Splide, SplideSlide } from "@splidejs/react-splide";
 import YouTube from "react-youtube";
 
-import { useGetAnimeDetailsByIdQuery } from "../features/apiSlice";
-import { IoVolumeHigh, IoVolumeHighOutline } from "react-icons/io5";
+import { useGetAnimeDetailsByIdQuery, useGetTrendingAnimeQuery } from "../features/apiSlice";
 
-
-const options = {
-  // type: 'loop',
-  // rewind: true, 
-  // rewindByDrag: true, 
-  perPage: 3, 
-  arrows: false, 
-  pagination: false, 
-  drag: 'free', 
-  gap: '1rem', 
-  breakpoints: {
-    500: {
-      perPage: 3,
-      perMove: 1
-    },
-    723: {
-      perPage: 4,
-      perMove: 2
-    },
-    1247: {
-      perPage: 3,
-      perMove: 1
-    }
-  }
-}
-
-const iframeStyle = {
-  height: '100%', 
-  width: '100%', 
-  position: 'absolute', 
-  top: 0,
-  left: 0,
-}
-
-const ItemCard = ({ 
-  image, title, id, description, status, cover, rating, releaseDate, trailer,
-  genres = [], totalEpisodes, season, studios = [], characters = [],
-  boxStyle, ...rest
-}) => {
-  const playerRef = useRef(null)
-  const [state, setState] = useState({
-    isLoading: true,
-    isMuted: true
-  })
-
-  const backgroundHandler = () => {
-    Router.push(`/anime/${id}`)
-  }
-  // const handleMute = () => {
-  //   // if(playerRef.current.internalPlayer.isMuted() == true) {
-  //   //   return playerRef.current.internalPlayer.unMute()
-  //   // }
-  //   playerRef.current.internalPlayer.mute()
-  //   setState({
-  //     isMuted: true
-  //   })
-  // }
-  // const handleUnmute = () => {
-  //   if(playerRef != null) {
-  //     playerRef.current.internalPlayer.unMute()
-  //   }
-  //   setState({ isMuted: false })
-  // }
-
-  useEffect(() => {
-    setTimeout(() => {
-      setState({
-        isLoading: false
-      })
-    }, 3000);
-  }, [state.isLoading])
-
-  console.log(playerRef, 'ref')
-
-  return(
-    <Flex flexDir="column" alignItems="start" justifyContent="flex-end" minH="50vh" h="75vh" pos="relative" {...boxStyle}>
-      <Img 
-        pos="absolute" 
-        h="full" w="full" 
-        top={0} left={0} 
-        objectFit="cover" 
-        objectPosition="center" 
-        alt={`${title.romaji} cover`} 
-        src={cover} />
-      <Box 
-        pos="absolute" 
-        h="full" w="full" 
-        bgGradient="linear-gradient(180deg, rgba(22, 21, 26, 0) 0%, rgba(22, 21, 26, 0.9) 72.92%, #16151A 100%)" 
-        />
-      <Container display="flex" maxW="container.xl" zIndex="99" pos="relative">
-        <Stack flexDir={{ base: 'column-reverse', md: 'row' }} justifyContent="space-between" direction={{ base: 'column', md: 'row' }}>
-          <Box maxW="60%">
-            <Heading w="max" size="lg" transition="all 300ms ease" _hover={{ textDecor: 'underline' }} onClick={() => Router.push(`/anime/${id}`)} cursor="pointer" mb={2}>{title.romaji}</Heading>
-            <HStack spacing={4} mb={3}>
-              { genres.map((genre, genreKey) => <Tag key={genreKey} color="white" size="lg" fontSize="xs" bg="blackAlpha.500" rounded="full">{genre}</Tag> ) }
-            </HStack>
-            <Text fontSize="sm" noOfLines={{ base: 5, md: 10 }} whiteSpace="pre-line" mb={10}>{description.replace(/<br\s*[\/]?>/gi, '' || '')}</Text>
-          </Box>
-          <Splide options={options}>
-            { characters.filter(f => f.role == 'MAIN').map(character => (
-              <SplideSlide key={character.id}>
-                <Box>
-                  <Img boxSize="90px" borderRadius="53% 47% 70% 30% / 30% 59% 41% 70%" objectFit="cover" al={`${character.name.first} image`}  src={character.image} mb={1} />
-                  <Heading size="sm">{`${character.name.full}`}</Heading>
-                </Box> 
-              </SplideSlide> ))
-            }
-          </Splide>
-        </Stack>
-        <Flex pos="absolute" bottom={5} right={5}>
-          {/* <IconButton variant="ghost" icon={<HiOutlinePlay size="35px" />} />
-          <IconButton variant="ghost" icon={<IoVolumeHighOutline size="30px" />} /> */}
-        </Flex>
-      </Container>
-    </Flex>
-  )
-}
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller } from "swiper"
+import { IoPlaySharp } from "react-icons/io5";
 
 const Showcase = ({ }) => {
+  let anime
   const router = useRouter()
-  const { data: anime, isLoading, isError } = useGetAnimeDetailsByIdQuery(5680)
+  const sliderRef = useRef(null)
+  const [ isActive, setIsActive] = useState(true)
 
-  if(isError){
+  const handlePrev = useCallback(() => {
+    if (!sliderRef.current) return;
+    sliderRef.current.swiper.slidePrev();
+  }, []);
+
+  const handleNext = useCallback(() => {
+    if (!sliderRef.current) return;
+    sliderRef.current.swiper.slideNext();
+  }, []);
+
+  const { data, isLoading, isError } = useGetTrendingAnimeQuery()
+  if(data){
+    const { results } = data
+    anime = results
+  }else if(isError){
     console.log('Showcase error?: ', isError)
-  }else if(anime){
-    console.log('anime', anime)
   }
+
   return(
     <Fragment>
-      { !anime && isLoading && <Spinner color="primary.500" size="sm" />}
-      { anime && <ItemCard key={anime.id} {...anime} /> }
+      { !data && isLoading && <Spinner color="primary.500" size="sm" />}
+      {
+        anime && (
+          <Swiper 
+            loop={true}
+            ref={sliderRef}
+            lazy={true}
+            spaceBetween={30}
+            effect={"fade"}
+            pagination={{
+              type: 'bullets',
+              clickable: true
+            }}
+            freeMode={true}
+            autoplay={{
+              delay: 3500,
+              disableOnInteraction: false
+            }}
+            modules={[EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller ]}
+            fadeEffect={{
+              crossFade: true
+            }}>
+            {
+              [...anime]
+              .sort((a, b) => b.rating - a.rating)
+              .filter(f => f.status == 'Ongoing' && f.rating >= 70)
+              .map(anime => (
+                <SwiperSlide>
+                  <Flex flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="65vh" pos="relative" pb={4}>
+                    <Img pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${anime.title.romaji} cover`} src={anime.cover} />
+                    <Box layerStyle="showcaseLinearTop" /> 
+                    <Box layerStyle="showcaseLinearBottom" /> 
+                    <Box layerStyle="showcaseLinearRight" /> 
+                    <Container maxW="container.xl" zIndex="99" pos="relative">
+                      <Grid templateColumns="auto 400px" gap={4}>
+                        <Flex flexDir="column">
+                          <Heading size="lg" mb={2}>
+                            {anime.title.romaji}
+                          </Heading>
+                          <HStack spacing={4} mb={4}>
+                            { anime.genres.map((genre, genreKey) => <Tag key={genreKey} color="blackAlpha.800" size="md" fontSize="xs" bg="white" rounded="full">{genre}</Tag> ) }
+                          </HStack>
+                          <Text fontSize="sm" noOfLines={{ base: 5, md: 10 }} whiteSpace="pre-line" mb={10}>{anime.description.replace(/<br\s*[\/]?>/gi, '' || '')}</Text>
+                          <Button w="max" size="sm" bg="white" color="black" rounded="sm" iconSpacing={1} leftIcon={<IoPlaySharp size="25px" />}>Play</Button>
+                        </Flex>
+                      </Grid>
+                    </Container>
+                  </Flex> 
+                </SwiperSlide>)
+              )
+            }
+          </Swiper>
+        )
+      }
     </Fragment>
   )
 }
 
 export default Showcase
 
+
+
+
+
+
+
+// const iframeStyle = {
+//   height: '100%', 
+//   width: '100%', 
+//   position: 'absolute', 
+//   top: 0,
+//   left: 0,
+// }
 
 {/* {
   trailer != null && !state.isLoading ? (

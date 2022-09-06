@@ -18,6 +18,13 @@ import '@splidejs/react-splide/css/sea-green';
 // or only core styles
 import '@splidejs/react-splide/css/core';
 
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+import "swiper/css/bundle";
 
 function MyApp({ Component, pageProps }) {
   return (

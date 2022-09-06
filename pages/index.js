@@ -14,10 +14,10 @@ export default function Home({ title = 'AniStream'}) {
   return (
     <AppLayout>
       <Showcase />
-      <RecentEpisodes boxStyle={{ my: 50 }} />
-      <PopularAnime />
-      <TrendingAnime boxStyle={{ mt: 50 }} />
+      <PopularAnime boxStyle={{ mt: 20 }} />
+      <TrendingAnime boxStyle={{ mt: 20 }} />
       <AnimeGenre boxStyle={{ mt: 50 }} />
+      <RecentEpisodes boxStyle={{ my: 50 }} />
     </AppLayout>
   )
 }

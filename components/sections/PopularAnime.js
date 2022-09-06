@@ -60,7 +60,7 @@ export const PopularCard = ({ image, title, id, genres = [], rating, cover, stat
   )
 }
 
-const PopularAnime = ({ title = 'Popular Anime', ...rest }) => {
+const PopularAnime = ({ title = 'Popular Anime', boxStyle }) => {
 
   var popular
   const splideRef = useRef()
@@ -86,7 +86,7 @@ const PopularAnime = ({ title = 'Popular Anime', ...rest }) => {
 
 
   return(
-    <Box {...rest}>
+    <Box {...boxStyle}>
       <Container maxW="95vw">
         <HStack pos="relative" zIndex="999999" mb={-8} mx={12}>
           <Heading size="md">{title}</Heading>

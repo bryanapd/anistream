@@ -42,6 +42,32 @@ export const theme = extendTheme({
       '-webkit-tap-highlight-color': 'transparent'
     }
   },
+  layerStyles: {
+    showcaseLinearTop: {
+      bgGradient: 'linear(to-t, rgba(0,0,0,0.7945772058823529) 6%, rgba(0,0,3,0.46124387254901966) 23%, rgba(244,244,244,0) 100%)',
+      pos: 'absolute', 
+      h: 'full', 
+      w: 'full', 
+      bottom: 0, 
+      left: 0
+    },
+    showcaseLinearRight: {
+      pos: 'absolute', 
+      h: 'full', 
+      w: 'full', 
+      bottom: 0, 
+      left: 0,
+      bgGradient: 'linear(to-r, rgba(0,0,0,0.7945772058823529) 6%, rgba(0,0,3,0.46124387254901966) 23%, rgba(244,244,244,0) 100%)'
+    },
+    showcaseLinearBottom: {
+      pos: 'absolute', 
+      h: 'full', 
+      w: 'full', 
+      bottom: 0, 
+      left: 0,
+      bgGradient: 'linear(to-b, rgba(0,0,0,0.7945772058823529) 6%, rgba(0,0,3,0.46124387254901966) 23%, rgba(244,244,244,0) 100%)'
+    }
+  },
   components: {
     Input: {
       defaultProps: {

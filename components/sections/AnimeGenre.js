@@ -33,7 +33,7 @@ const AnimeGenre = ({ title = 'Anime Genre', boxStyle }) => {
             <Heading size="md" mb={4}>{title}</Heading>
             <Text fontSize="xs">Find anime series/movies with genre that you like most</Text>
           </Flex>
-          { genre && genre.filter(f => f.genres[0] == 'Action' && f.rating <= 70).slice(0,1).map(genre => <GenreCard key={genre.id} {...genre} />) }
+          { genre && genre.filter(f => f.genres[0] == 'Action' && f.rating <= 80).slice(0,1).map(genre => <GenreCard key={genre.id} {...genre} />) }
           { genre && genre.filter(f => f.genres[0] == 'Adventure').slice(0,1).map(genre => <GenreCard key={genre.id} {...genre} />) }
           { genre && genre.filter(f => f.genres[0] == 'Comedy').slice(0,1).map(genre => <GenreCard key={genre.id} {...genre} />) }
           { genre && genre.filter(f => f.genres[0] == 'Romance' || f.genres[0] == 'Drama').slice(0,1).map(genre => <GenreCard key={genre.id} {...genre} />) }

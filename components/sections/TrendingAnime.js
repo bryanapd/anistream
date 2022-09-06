@@ -7,12 +7,11 @@ import {
 } from '@chakra-ui/react'
 import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 
-import { Splide, SplideSlide } from "@splidejs/react-splide";
-import { Grid } from "@splidejs/splide-extension-grid";
-import { AutoScroll } from "@splidejs/splide-extension-auto-scroll";
-
 import { ItemCard } from './RecentEpisodes'
 import { useGetTrendingAnimeQuery } from "../../features/apiSlice";
+
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller } from "swiper"
 
 
 
@@ -71,22 +70,25 @@ const TrendingAnime = ({ title = 'Trending Anime', boxStyle }) => {
   }
   return(
     <Box {...boxStyle}>
-      <Container maxW="95vw">
         { !episodes && isLoading && <Spinner /> }
-        <HStack pos="relative" zIndex="999999" mb={-8} mx={12}>
-          <Heading size="md">{title}</Heading>
-          <Spacer />
-          <IconButton size="lg" variant="outline" rounded="2xl" icon={<IoArrowBack />} onClick={handleSplidePrev} />
-          <IconButton size="lg" variant="outline" rounded="2xl" icon={<IoArrowForward />} onClick={handleSplideNext} />
-        </HStack>
-        <Splide extensions={{ Grid }} ref={ref} options={options}>
-          { 
-            episodes && 
-            [...episodes]
-              .sort((a, b) => b.rating - a.rating)
-              .map(episode => <SplideSlide key={episode.id}> <ItemCard {...episode} /> </SplideSlide>) }
-        </Splide>
-      </Container>
+        <Container maxW="container.xl" mb={4}>
+          <HStack>
+            <Heading size="md">{title}</Heading>
+            <Spacer />
+          </HStack>
+        </Container>
+        <Swiper
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false
+          }}
+          lazy={true}
+          slidesPerView={5}
+          spaceBetween={30}
+          modules={[Autoplay, Lazy]}
+          pagination={false}>
+          { episodes && [...episodes].sort((a, b) => b.rating - a.rating).map(episode => <SwiperSlide key={episode.id}> <ItemCard {...episode} /> </SwiperSlide>) }
+        </Swiper>
     </Box>
   )
 }
