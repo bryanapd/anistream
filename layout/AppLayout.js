@@ -1,13 +1,20 @@
+import Head from "next/head"
 import { Fragment, useState, useEffect, useRef } from "react"
+import Link from "next/link"
 import { useRouter } from "next/router"
-import { Box, Button, Container, Flex, Heading, HStack, IconButton, Img, Input, Spacer, Spinner, Text, useColorMode } from "@chakra-ui/react"
+
+import { 
+  Box, Button, Container, Flex, Heading, HStack, IconButton, Img, 
+  Input, Spacer, Spinner, Text, useColorMode, useColorModeValue as mode
+} from "@chakra-ui/react"
+import { 
+  IoChevronDown, IoChevronUp, IoMoonOutline, IoSearch, IoSunnyOutline 
+} from "react-icons/io5"
 
 import { AppBrand, AppHeader, AppLinks, AppSpacer } from "../components/Header"
 
 import useDebounce from "../hooks/useDebounce"
 import { useGetAnimeSearchQuery } from "../features/apiSlice"
-import { IoChevronDown, IoChevronUp, IoMoonOutline, IoSunnyOutline } from "react-icons/io5"
-import Head from "next/head"
 
 
 const routes = [
@@ -16,84 +23,106 @@ const routes = [
     label: 'Explore'
   },
 ]
+
+const QueryCard = ({ id, image, title, status, type, rating, totalEpisodes, releaseDate, color = '#ffff' }) => (
+  <Link href={`/anime/${id}`} passHref>
+    <HStack alignItems="flex-start" cursor="pointer" _hover={{ bg: '#436bf1' }} p={2}>
+      <Img 
+        h="auto" w="full"
+        maxH="70px" maxW="50px"
+        src={image} 
+        objectFit="cover" 
+        />
+      <Box>
+        <Text fontSize="sm" fontWeight="medium" color="yellow.500" noOfLines={2}>{title.romaji}</Text>
+        <Text fontSize="xs" color="white">{status} &bull; {type} &bull; <Text as="span">{releaseDate}</Text> </Text>
+      </Box>
+    </HStack>
+  </Link>
+)
+
 const AppLayout = ({ children, withFooter }) => {
+  let result
   const router = useRouter()
+  const ref = useRef(null)
   const { colorMode, toggleColorMode } = useColorMode()
-  const [search, setSearch] = useState('')
-  const [showMore, setShowMore] = useState(false)
-  const debouncedSearchQuery = useDebounce(search, 2000)
-  const inputRef = useRef()
+  const [visible, setVisible] = useState(false)
+  const [query, setQuery] = useState('')
+  const [hideResult, setHideResult] = useState(false)
+  const debouncedSearchQuery = useDebounce(query, 2000)
 
-  const { data: searchResult, isLoading, isFetching, isError } = useGetAnimeSearchQuery(search, { skip: debouncedSearchQuery == '' })
-
-  if(isError){
-    console.log('Search error?', isError)
-  }else if(searchResult){
-    console.log(searchResult)
-  }else if(isLoading){
+  const { data, isLoading, isError } = useGetAnimeSearchQuery(query, { skip: debouncedSearchQuery == '' })
+  if(isLoading){
     console.log('is loading', isLoading)
+  }else if(isError){
+    console.log('Search error?', isError)
+  }else if(data){
+    const { results } = data
+    result = results
   }
 
   const searchHandler = e => {
-    setSearch(e.target.value)
-  }
-  const handleShowMore = () => {
-    setShowMore(!showMore)
-  }
-  const numberOfItems = showMore ? searchResult.length : 6
-  
-  const focusHandler = () => {
-    inputRef.current.focus
+    if(query == ''){
+      setQuery('')
+    } 
+    setQuery(e.target.value)
   }
 
+  function useOutsideAlerter(ref) {
+    useEffect(() => {
+      /**
+       * Alert if clicked on outside of element
+       */
+      function handleClickOutside(event) {
+        if(ref.current && ref.current.contains(event.target)){
+          setHideResult(false)
+        }else if (ref.current && !ref.current.contains(event.target)) {
+          setHideResult(true)
+        }
+      }
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  }
+  useOutsideAlerter(ref)
   return(
     <Fragment>
       <Head>
-        <script src="path-to-the-script/splide-extension-grid.min.js"></script>
       </Head>
       <AppHeader>
-        <AppBrand title="AniStream" />
-        <AppLinks
-          routes={routes}
-          router={router} 
-          />
+        <AppBrand logo="../../../hat-icon.png" />
+        {/* <AppLinks routes={routes} router={router} /> */}
         <Spacer />
-        <Box pos="relative">
-          <Input 
-            variant="solid" 
-            ref={inputRef}
-            w={ search != '' ? '500px' : 'auto' } 
-            transition="all 300ms ease"
-            placeholder="Search your favorite anime..."
-            _placeholder={{ fontSize: 'xs' }}
-            _focus={{ w: '500px' }}
-            mb={.5}
-            onChange={searchHandler}
-            />
-            { !searchResult && isLoading && <Spinner size="sm" color="yellow.500" /> }
-            <Flex flexDir="column" pos="absolute" bg="blackAlpha.800">
-              { 
-                searchResult && searchResult.slice(0, numberOfItems).map(result => (
-                  <HStack key={result.animeId} w="500px" p={2} _hover={{ bg: 'yellow.400' }} cursor="pointer" onClick={() => router.push(`/anime/${result.animeId}`)}>
-                    <Img boxSize="60px" src={result.animeImg} objectFit="cover" />
-                    <Box>
-                      <Heading size="xs" color="yellow.500" mb={2}>{result.animeTitle}</Heading>
-                      <Heading size="xs" color="white">{result.status}</Heading>
-                    </Box>
-                  </HStack> )
+        {
+          visible && (
+            <Box pos="relative">
+              <Input ref={ref} value={query} variant="solid" rounded={0} w={{ base: 'auto', md: '300px' }} onChange={searchHandler} transition="all 300ms ease" placeholder="Search your favorite anime..." _placeholder={{ fontSize: 'xs' }} />
+              {
+                result && hideResult == false && (
+                  <Flex w="300px" flexDir="column" bg="black" pos="fixed" overflow="hidden" zIndex="9999999999999999">
+                    { !result && isLoading && <Spinner size="sm" color="yellow.500" /> }
+                    { 
+                      result && [...result]
+                        .sort((a,b) => a.title.romaji.localeCompare(b.title.romaji) && b.rating - a.rating)
+                        .slice(0, 6)
+                        .map(res => <QueryCard key={res.id} {...res} /> ) 
+                    }
+                    { result && result.length > 6 && <Button fontSize="xs" bg="yellow.500" rounded={0} rightIcon={<Spinner size="xs" />}>Load More</Button> }
+                  </Flex>
                 )
               }
-              {searchResult && searchResult.length >= 6 && (
-                <Button bg="yellow.500" rounded={0} onClick={handleShowMore}  rightIcon={showMore ? <IoChevronUp size={20} /> : <IoChevronDown size={20} />}>
-                  { showMore ? 'Show less' : 'Show more' }
-                </Button> )
-              }
-            </Flex>
-        </Box>
-        <IconButton icon={ colorMode == 'light' ? <IoMoonOutline /> : <IoSunnyOutline /> } onClick={toggleColorMode} />
+            </Box>
+          )
+        }
+        <IconButton variant="ghost" size="sm" icon={<IoSearch size={18} />} onClick={() => setVisible(!visible)} />
+        <IconButton variant="ghost" size="sm" icon={ colorMode == 'light' ? <IoMoonOutline size={18} /> : <IoSunnyOutline size={18} /> } onClick={toggleColorMode} />
       </AppHeader>
       {/* <AppSpacer /> */}
-      <Box minH="75vh">
+      <Box minH="75vh" bg={mode('rgba(255,255,255,0.7)', '#0A0B13')}>
         { children }
       </Box>
     </Fragment>

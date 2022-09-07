@@ -74,7 +74,7 @@ const Showcase = ({ }) => {
                     <Box layerStyle="showcaseLinearTop" /> 
                     <Box layerStyle="showcaseLinearBottom" /> 
                     <Box layerStyle="showcaseLinearRight" /> 
-                    <Container maxW="container.xl" zIndex="99" pos="relative">
+                    <Container maxW="container.xl" pos="relative">
                       <Grid templateColumns="auto 400px" gap={4}>
                         <Flex flexDir="column">
                           <Heading size="lg" mb={2}>

@@ -11,11 +11,12 @@ export const AppHeader = ({ children, boxStyle, ...rest }) => (
   <Box>
     <Box 
       borderTopWidth={2} 
-      // backdropFilter="blur(20px)"
+      // backdropFilter="blur(8px)"
       borderColor="transparent"
-      py={2} pos="fixed" w="full" zIndex="1000"
+      pos="fixed" 
+      py={2} w="full" zIndex="1000"
       {...boxStyle}>
-      <Container maxW="container.lg">
+      <Container maxW="container.xl">
         <HStack {...rest}>
           {children}
         </HStack>

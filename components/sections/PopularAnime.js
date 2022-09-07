@@ -88,7 +88,7 @@ const PopularAnime = ({ title = 'Popular Anime', boxStyle }) => {
   return(
     <Box {...boxStyle}>
       <Container maxW="95vw">
-        <HStack pos="relative" zIndex="999999" mb={-8} mx={12}>
+        <HStack pos="relative" zIndex="999" mb={-8} mx={12}>
           <Heading size="md">{title}</Heading>
           <Spacer />
           <IconButton size="lg" variant="outline" rounded="2xl" icon={<IoArrowBack />} onClick={handleSplidePrev} />

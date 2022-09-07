@@ -15,9 +15,6 @@ export const apiSlice = createApi({
         }
       })
     }),
-    getRecentRelease: builder.query({
-      query: () => 'recent-release'
-    }),
     getAnimeGenre: builder.query({
       query: genre => `meta/anilist/${genre}`
     }),
