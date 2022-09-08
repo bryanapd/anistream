@@ -19,18 +19,8 @@ export const theme = extendTheme({
       '900': "#1A1A1A"
     },
     primary: {
-      '500': '#00B58F',
-      '600': '#007E57'
+      '500': '#436bf1',
     },
-    secondary: {
-      '500': '#FFD79A',
-      '600': '#FFF7E9',
-      '700': '#FFAF17'
-    },
-    tertiary: {
-      '500': '#FF621A',
-      '600': '#FBEBE5'
-    }
   },
   // fonts: {
   //   heading: 'Urbanist',
@@ -99,6 +89,25 @@ export const theme = extendTheme({
         }
       }
     },
+    Tag: {
+      baseStyle: {
+        transition: `all 500ms ease`,
+        _focus: {
+          boxShadow: 'none',
+        },
+        _hover: {
+          boxShadow: 'none',
+        }
+      },
+      variants: {
+        primaryTag: {
+          bg: 'primary.500',
+          fontWeight: 'bold',
+          rounded: 'sm',
+          zIndex: 99,
+        }
+      }
+    },
     Button: {
       baseStyle: {
         transition: `all 500ms ease`,
@@ -111,28 +120,11 @@ export const theme = extendTheme({
       },
       variants: {
         primary: {
-          color: 'white',
-          fontSize: 'lg',
-          fontWeight: 'black',
-          transition: 'all 300ms ease',
-          bgGradient: 'linear(to-r, #00B58F 0%, #007E57 95%)',
-          rounded: 'full',
-          _hover: {
-            boxShadow: '0px 0px 7px green',
-          }
-        },
-        secondary: {
-          fontSize: 'lg',
-          fontWeight: 'black',
-          transition: 'all 300ms ease',
-          borderWidth : 1.6,
-          borderColor: '#FFAF17',
-          rounded: 'full',
-          _hover: {
-            boxShadow: '0px 0px 7px orange',
-          }
-        }
-      },
+          bg: 'primary.500',
+          rounded: 'sm',
+          iconSpacing: 1
+       }
     }
+  }
   }
 })

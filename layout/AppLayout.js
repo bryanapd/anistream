@@ -51,7 +51,7 @@ const AppLayout = ({ children, withFooter }) => {
   const [hideResult, setHideResult] = useState(false)
   const debouncedSearchQuery = useDebounce(query, 2000)
 
-  const { data, isLoading, isError } = useGetAnimeSearchQuery(query, { skip: debouncedSearchQuery == '' })
+  const { data, isLoading, isFetching, isError } = useGetAnimeSearchQuery(query, { skip: debouncedSearchQuery == '' })
   if(isLoading){
     console.log('is loading', isLoading)
   }else if(isError){
@@ -100,11 +100,19 @@ const AppLayout = ({ children, withFooter }) => {
         {
           visible && (
             <Box pos="relative">
-              <Input ref={ref} value={query} variant="solid" rounded={0} w={{ base: 'auto', md: '300px' }} onChange={searchHandler} transition="all 300ms ease" placeholder="Search your favorite anime..." _placeholder={{ fontSize: 'xs' }} />
+              <Input 
+                ref={ref} value={query} 
+                variant="solid" 
+                rounded={0} 
+                w={{ base: 'auto', md: '300px' }} 
+                onChange={searchHandler} 
+                transition="all 300ms ease" 
+                placeholder="Search your favorite anime..."
+                _placeholder={{ fontSize: 'xs' }} />
               {
                 result && hideResult == false && (
                   <Flex w="300px" flexDir="column" bg="black" pos="fixed" overflow="hidden" zIndex="9999999999999999">
-                    { !result && isLoading && <Spinner size="sm" color="yellow.500" /> }
+                    { !result && <Spinner size="sm" color="yellow.500" /> }
                     { 
                       result && [...result]
                         .sort((a,b) => a.title.romaji.localeCompare(b.title.romaji) && b.rating - a.rating)

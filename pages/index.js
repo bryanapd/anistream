@@ -9,6 +9,7 @@ import RecentEpisodes from '../components/sections/RecentEpisodes'
 import TrendingAnime from '../components/sections/TrendingAnime'
 import AnimeGenre from '../components/sections/AnimeGenre'
 
+
 export default function Home({ title = 'AniStream'}) {
 
   return (

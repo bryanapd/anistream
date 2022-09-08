@@ -1,37 +1,35 @@
 import { Fragment, useEffect, useRef, useState, useCallback } from "react";
-import Router, { useRouter } from "next/router";
-import '../styles/Showcase.module.css'
+import Link from "next/link";
 import { 
   Box, Text, Heading, Container, Img, Spinner, Stack, 
-  HStack, Flex, Divider, Tag, Button, IconButton,
-  AspectRatio, Grid, StackDivider
+  HStack, Flex, Divider, Tag, Button, Grid,
 } from "@chakra-ui/react";
-import { HiOutlinePlay } from 'react-icons/hi'
-import YouTube from "react-youtube";
+import { IoPlaySharp } from "react-icons/io5";
 
 import { useGetAnimeDetailsByIdQuery, useGetTrendingAnimeQuery } from "../features/apiSlice";
 
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller } from "swiper"
-import { IoPlaySharp } from "react-icons/io5";
+import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller, Thumbs } from "swiper"
+
+
+
+const thumbsParams = {
+  modules: [Controller, FreeMode, Thumbs],
+  // slideToClickedSlide: true,
+  slidesPerView: 6,
+  freeMode: true,
+  watchSlidesProgress: true,
+  // centeredSlides: true,
+  pagination: false,
+  spaceBetween: 10
+}
 
 const Showcase = ({ }) => {
   let anime
-  const router = useRouter()
-  const sliderRef = useRef(null)
-  const [ isActive, setIsActive] = useState(true)
-
-  const handlePrev = useCallback(() => {
-    if (!sliderRef.current) return;
-    sliderRef.current.swiper.slidePrev();
-  }, []);
-
-  const handleNext = useCallback(() => {
-    if (!sliderRef.current) return;
-    sliderRef.current.swiper.slideNext();
-  }, []);
-
+  const [thumbsSwiper, setThumbsSwiper] = useState(null)
+  const [swiperIndex, setSwiperIndex] = useState(0)
   const { data, isLoading, isError } = useGetTrendingAnimeQuery()
+
   if(data){
     const { results } = data
     anime = results
@@ -39,60 +37,88 @@ const Showcase = ({ }) => {
     console.log('Showcase error?: ', isError)
   }
 
+  // const handlePrev = useCallback(() => {
+  //   if (!sliderRef.current) return
+  //   sliderRef.current.swiper.slidePrev()
+  // }, [])
+
+  // const handleNext = useCallback(() => {
+  //   if (!sliderRef.current) return
+  //   sliderRef.current.swiper.slideNext()
+  // }, [])
+
   return(
     <Fragment>
       { !data && isLoading && <Spinner color="primary.500" size="sm" />}
       {
         anime && (
-          <Swiper 
-            loop={true}
-            ref={sliderRef}
-            lazy={true}
-            spaceBetween={30}
-            effect={"fade"}
-            pagination={{
-              type: 'bullets',
-              clickable: true
-            }}
-            freeMode={true}
-            autoplay={{
-              delay: 3500,
-              disableOnInteraction: false
-            }}
-            modules={[EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller ]}
-            fadeEffect={{
-              crossFade: true
-            }}>
-            {
-              [...anime]
-              .sort((a, b) => b.rating - a.rating)
-              .filter(f => f.status == 'Ongoing' && f.rating >= 70)
-              .map(anime => (
-                <SwiperSlide>
-                  <Flex flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="65vh" pos="relative" pb={4}>
-                    <Img pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${anime.title.romaji} cover`} src={anime.cover} />
-                    <Box layerStyle="showcaseLinearTop" /> 
-                    <Box layerStyle="showcaseLinearBottom" /> 
-                    <Box layerStyle="showcaseLinearRight" /> 
-                    <Container maxW="container.xl" pos="relative">
-                      <Grid templateColumns="auto 400px" gap={4}>
-                        <Flex flexDir="column">
-                          <Heading size="lg" mb={2}>
-                            {anime.title.romaji}
-                          </Heading>
-                          <HStack spacing={4} mb={4}>
-                            { anime.genres.map((genre, genreKey) => <Tag key={genreKey} color="blackAlpha.800" size="md" fontSize="xs" bg="white" rounded="full">{genre}</Tag> ) }
-                          </HStack>
-                          <Text fontSize="sm" noOfLines={{ base: 5, md: 10 }} whiteSpace="pre-line" mb={10}>{anime.description.replace(/<br\s*[\/]?>/gi, '' || '')}</Text>
-                          <Button w="max" size="sm" bg="white" color="black" rounded="sm" iconSpacing={1} leftIcon={<IoPlaySharp size="25px" />}>Play</Button>
-                        </Flex>
-                      </Grid>
-                    </Container>
-                  </Flex> 
-                </SwiperSlide>)
-              )
-            }
-          </Swiper>
+          <Box>
+            <Swiper 
+              loop={true}
+              lazy={true}
+              preloadImages={false}
+              spaceBetween={30}
+              effect={"fade"}
+              pagination={false}
+              thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+              freeMode={true}
+              modules={[EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller, Thumbs ]}
+              onActiveIndexChange={swiper => setSwiperIndex(swiper.realIndex)}
+              fadeEffect={{
+                crossFade: true
+              }}>
+              {
+                [...anime]
+                .sort((a, b) => b.rating - a.rating)
+                .filter(f => f.status == 'Ongoing' && f.rating >= 70)
+                .map(anime => (
+                  <SwiperSlide key={`slide_${anime.id}`}>
+                    <Flex flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="65vh" pos="relative" pb={4}>
+                      <Img filter="blur(2px)" pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${anime.title.romaji} cover`} src={anime.cover} />
+                      <Box layerStyle="showcaseLinearTop" /> 
+                      <Box layerStyle="showcaseLinearRight" /> 
+                      <Container maxW="container.xl" pos="relative">
+                        <Grid templateColumns="auto 400px" gap={4}>
+                          <Flex flexDir="column">
+                            <Heading size="lg" mb={2}>
+                              {anime.title.romaji}
+                            </Heading>
+                            <HStack spacing={4} mb={4}>
+                              { anime.genres.map((genre, genreKey) => <Tag key={genreKey} bg="primary.500" fontSize="xs" color="white" fontWeight="bold" rounded="sm">{genre}</Tag> ) }
+                            </HStack>
+                            <Text fontSize="sm" noOfLines={{ base: 5, md: 10 }} whiteSpace="pre-line" mb={10}>{anime.description.replace(/<br\s*[\/]?>/gi, '' || '')}</Text>
+                            <Button variant="primary" w="max" iconSpacing={1} leftIcon={<IoPlaySharp size="25px" />}>Play</Button>
+                          </Flex>
+                        </Grid>
+                      </Container>
+                    </Flex> 
+                  </SwiperSlide>)
+                )
+              }
+            </Swiper>
+            <Box mt={10}>
+              <Heading size="md" textAlign="center" mb={10}>Top Trending Anime</Heading>
+              <Swiper onSwiper={setThumbsSwiper} {...thumbsParams}>
+                {
+                  [...anime]
+                  .sort((a, b) => b.rating - a.rating)
+                  .filter(f => f.status == 'Ongoing' && f.rating >= 70)
+                  .map((anime, aniKey) => (
+                    <SwiperSlide key={`slide_${anime.id}`}>
+                      <Box opacity={swiperIndex == aniKey ? 1 : .5} cursor="pointer" transition="all 300ms ease" pos="relative" _hover={{ transform: 'scale(1.05)', opacity: 1, shadow: '1px 1px 1px 1px #0a0a0a0' }}>
+                        <Img 
+                          h="400px"
+                          src={anime.image} 
+                          objectFit="cover" objectPosition="center center" 
+                          alt={`${anime.title.romaji} thumb image`} 
+                          />
+                      </Box>
+                    </SwiperSlide>
+                  ))
+                }
+              </Swiper>
+            </Box>
+          </Box>
         )
       }
     </Fragment>
@@ -100,12 +126,6 @@ const Showcase = ({ }) => {
 }
 
 export default Showcase
-
-
-
-
-
-
 
 // const iframeStyle = {
 //   height: '100%', 
