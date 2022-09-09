@@ -1,128 +1,89 @@
 import { Fragment, useRef, useState } from "react";
-import Router, { useRouter } from "next/router";
+import Link from "next/link";
 
 import { 
-  Box, Text, Heading, Img, Flex, Container, Spinner, 
-  Spacer, HStack, IconButton, Tag
+  Box, Text, Heading, Img, Flex, Container, Spinner, Tag, HStack, Button,
+  useColorModeValue as mode 
 } from '@chakra-ui/react'
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 
-import { Splide, SplideSlide } from "@splidejs/react-splide";
-import { Grid } from "@splidejs/splide-extension-grid";
-import { AutoScroll } from "@splidejs/splide-extension-auto-scroll";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Autoplay, Lazy, Controller, Thumbs, Grid } from "swiper"
 
 import { useGetRecentEpisodesQuery } from "../../features/apiSlice";
 
 
-const options = {
-  type: 'loop',
-  rewind: true, 
-  rewindByDrag: true, 
-  perPage: 5, 
-  perMove: 2,
-  lazyLoad: true,
-  arrows: false, 
-  pagination: false, 
-  drag: 'free', 
-  gap: '1rem',
-  // breakpoints: {
-  //   500: {
-  //     perPage: 1,
-  //     perMove: 1
-  //   },
-  //   723: {
-  //     perPage: 2,
-  //     perMove: 2
-  //   },
-  //   935: {
-  //     perPage: 3,
-  //     perMove: 3
-  //   },
-  //   1247: {
-  //     perPage: 6,
-  //     perMove: 4
-  //   }
-  // }
-}
-
 export const ItemCard = ({ id, title, image, rating, color, episodeId, episodeTitle, episodeNumber, genres = [], status }) => {
   const [hovered, setHovered] = useState(false)
   return(
-    <Flex 
-      p={3} 
-      flexDir="column" alignItems="start" justifyContent="flex-end" 
-      minH="20vh" h="47vh" 
-      w="auto"
-      pos="relative"  
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      transition="all 300ms ease"
-      _hover={{
-        transform: 'scale(1.05)'
-      }}
-      onClick={() => Router.push(`/anime/${id}`)}
-      cursor="pointer">
-      <Img
-        src={image}
-        h="full"
-        w="full"
-        objectFit="cover"
-        pos="absolute"
-        top={0} left={0}
-        alt={`${title.romaji} image`}
-        />
-      {
-        hovered == false && (
-          <Box 
-            pos="absolute" h="full" w="full" 
-            bgGradient={`linear(to-b, transparent, rgb(10 22 37))`}
-            bottom={0} left={0}
-            />
-        )
-      } 
-      <Tag size="sm" bg="#436bf1" color="white" fontWeight="bold" rounded="0" zIndex="99" mb={2}>{ episodeId ? `Ep. ${episodeNumber}` : status }</Tag>
-      <Heading size="xs" zIndex="99" noOfLines={3}>{title.romaji}</Heading>
-    </Flex>
+    <Link href={`/anime/${id}`} passHref>
+      <Flex 
+        p={3} 
+        flexDir="column" alignItems="start" justifyContent="flex-end" 
+        minH="20vh" h="400px" 
+        w="auto"
+        pos="relative"  
+        overflow="hidden"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        cursor="pointer">
+        <Img
+          h="full"
+          w="full"
+          src={image}
+          objectFit="cover"
+          opacity={hovered ? 1 : .5}
+          pos="absolute"
+          top={0} left={0}
+          transition="all 300ms ease"
+          _hover={{
+            transform: 'scale(1.05)'
+          }}
+          alt={`${title.romaji} image`}
+          />
+        {/* { hovered && <Box pos="absolute" h="full" w="full" bgGradient={`linear(to-b, transparent, rgb(10 22 37))`} bottom={0} left={0} /> }  */}
+        <Tag size="sm" bg="#436bf1" color="white" fontWeight="bold" rounded="0" zIndex="99" mb={2}>
+          { episodeId ? `Ep. ${episodeNumber}` : status }
+        </Tag>
+        <Heading size="xs" zIndex="99" noOfLines={3}>{title.romaji}</Heading>
+      </Flex>
+    </Link>
   )
 }
 
-const RecentEpisodes = ({ title = 'Recent Release', boxStyle }) => {
-  const ref = useRef()
-  const [currentPage, setCurrentPage] = useState(1);
-  
-
+const RecentEpisodes = ({ title = 'Recent Episodes', boxStyle }) => {
   var episodes
-  const { data, isLoading, isError } = useGetRecentEpisodesQuery()
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const { data, isLoading, isError } = useGetRecentEpisodesQuery()
   if(data){
     const { results } = data
     episodes = results
   }
 
-  const handleSplideNext = () => {
-    if(ref){
-      ref.current.go('>')
-    }
-  }
-  const handleSplidePrev = () => {
-    if(ref){
-      ref.current.go('<')
-    }
+  const swiperParams = {
+    modules: [Controller, FreeMode, Thumbs, Autoplay, Grid],
+    grid: {
+      rows: 2,
+      fill: 'row'
+    },
+    slidesPerView: 5,
+    freeMode: true,
+    loop: false,
+    pagination: false,
+    spaceBetween: 15
   }
 
   return(
     <Box {...boxStyle}>
-      <Container maxW="95vw">
+      <Container maxW="container.xl">
         { !episodes && isLoading && <Spinner /> }
-        <HStack pos="relative" zIndex="999999" mb={-8} mx={12}>
-          <Heading size="md">{title}</Heading>
-          <Spacer />
-          <IconButton size="lg" variant="outline" rounded="2xl" icon={<IoArrowBack />} onClick={handleSplidePrev} />
-          <IconButton size="lg" variant="outline" rounded="2xl" icon={<IoArrowForward />} onClick={handleSplideNext} />
-        </HStack>
-        <Splide extensions={{ Grid }} ref={ref} options={options}>
-          { episodes && episodes.map(episode => <SplideSlide key={episode.id}> <ItemCard {...episode} /> </SplideSlide>) }
-        </Splide>
+        <Flex justifyContent="space-between">
+          <Heading size="md" mb={6}>{title}</Heading>
+          <Button bg={mode('#fafafa', 'gray.800')} borderWidth={1} borderColor={mode('white', 'gray.700')} size="sm" fontSize="xs" rounded="sm">Show More</Button>
+        </Flex>
+        <Swiper {...swiperParams}>
+          { episodes && episodes.slice(0,10).map(episode => <SwiperSlide key={episode.id}> <ItemCard {...episode} /> </SwiperSlide>) }
+        </Swiper>
       </Container>
     </Box>
   )

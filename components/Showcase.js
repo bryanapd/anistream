@@ -14,12 +14,11 @@ import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controlle
 
 
 const thumbsParams = {
-  modules: [Controller, FreeMode, Thumbs],
-  // slideToClickedSlide: true,
+  modules: [Controller, FreeMode, Thumbs, Autoplay],
   slidesPerView: 6,
   freeMode: true,
+  loop: true,
   watchSlidesProgress: true,
-  // centeredSlides: true,
   pagination: false,
   spaceBetween: 10
 }
@@ -59,6 +58,10 @@ const Showcase = ({ }) => {
               preloadImages={false}
               spaceBetween={30}
               effect={"fade"}
+              // autoplay={{
+              //   delay: 3000,
+              //   disableOnInteraction: false,
+              // }}
               pagination={false}
               thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
               freeMode={true}
@@ -86,7 +89,7 @@ const Showcase = ({ }) => {
                             <HStack spacing={4} mb={4}>
                               { anime.genres.map((genre, genreKey) => <Tag key={genreKey} bg="primary.500" fontSize="xs" color="white" fontWeight="bold" rounded="sm">{genre}</Tag> ) }
                             </HStack>
-                            <Text fontSize="sm" noOfLines={{ base: 5, md: 10 }} whiteSpace="pre-line" mb={10}>{anime.description.replace(/<br\s*[\/]?>/gi, '' || '')}</Text>
+                            <Text fontSize="sm" noOfLines={{ base: 5, md: 10 }} whiteSpace="pre-line" mb={10}>{anime.description.replace(/<[^>]*>?/gm, '' || '')}</Text>
                             <Button variant="primary" w="max" iconSpacing={1} leftIcon={<IoPlaySharp size="25px" />}>Play</Button>
                           </Flex>
                         </Grid>
@@ -97,7 +100,7 @@ const Showcase = ({ }) => {
               }
             </Swiper>
             <Box mt={10}>
-              <Heading size="md" textAlign="center" mb={10}>Top Trending Anime</Heading>
+              <Heading size="md" textAlign="center" mb={6}>Top Trending Weekly</Heading>
               <Swiper onSwiper={setThumbsSwiper} {...thumbsParams}>
                 {
                   [...anime]
@@ -105,7 +108,7 @@ const Showcase = ({ }) => {
                   .filter(f => f.status == 'Ongoing' && f.rating >= 70)
                   .map((anime, aniKey) => (
                     <SwiperSlide key={`slide_${anime.id}`}>
-                      <Box opacity={swiperIndex == aniKey ? 1 : .5} cursor="pointer" transition="all 300ms ease" pos="relative" _hover={{ transform: 'scale(1.05)', opacity: 1, shadow: '1px 1px 1px 1px #0a0a0a0' }}>
+                      <Box opacity={swiperIndex == aniKey ? 1 : .5} cursor="pointer" transition="all 300ms ease" pos="relative" _hover={{ transform: 'scale(1.05)', opacity: 1 }}>
                         <Img 
                           h="400px"
                           src={anime.image} 
