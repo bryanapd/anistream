@@ -130,7 +130,7 @@ const AppLayout = ({ children, withFooter }) => {
         <IconButton variant="ghost" size="sm" icon={ colorMode == 'light' ? <IoMoonOutline size={18} /> : <IoSunnyOutline size={18} /> } onClick={toggleColorMode} />
       </AppHeader>
       {/* <AppSpacer /> */}
-      <Box minH="75vh" bg={mode('rgba(255,255,255,0.7)', '#0A0B13')}>
+      <Box minH="75vh" bg={mode('rgba(255,255,255,0.7)', '#0A0B13')} pb={100}>
         { children }
       </Box>
     </Fragment>

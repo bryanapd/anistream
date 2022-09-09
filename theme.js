@@ -21,6 +21,9 @@ export const theme = extendTheme({
     primary: {
       '500': '#436bf1',
     },
+    secondary: {
+      '500': '#1C3879'
+    }
   },
   // fonts: {
   //   heading: 'Urbanist',
@@ -123,6 +126,12 @@ export const theme = extendTheme({
           bg: 'primary.500',
           rounded: 'sm',
           iconSpacing: 1
+       },
+       seeMore: {
+        color: 'white',
+        bg: 'primary.500',
+        fontSize: 'xs',
+        rounded: 'sm'
        }
     }
   }

@@ -5,7 +5,12 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'https://consumet-api.herokuapp.com/' }),
   endpoints: builder => ({
     getPopularAnime: builder.query({
-      query: () => 'meta/anilist/popular'
+      query: () => ({
+        url: 'meta/anilist/popular',
+        params: {
+          perPage: 50
+        }
+      })
     }),
     getTrendingAnime: builder.query({
       query: () => ({

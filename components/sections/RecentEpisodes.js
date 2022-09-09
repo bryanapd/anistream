@@ -12,14 +12,14 @@ import { FreeMode, Autoplay, Lazy, Controller, Thumbs, Grid } from "swiper"
 import { useGetRecentEpisodesQuery } from "../../features/apiSlice";
 
 
-export const ItemCard = ({ id, title, image, rating, color, episodeId, episodeTitle, episodeNumber, genres = [], status }) => {
+export const ItemCard = ({ id, title, image, rating, color, episodeId, episodeTitle, episodeNumber, genres = [], status, h = '400px' }) => {
   const [hovered, setHovered] = useState(false)
   return(
     <Link href={`/anime/${id}`} passHref>
       <Flex 
         p={3} 
         flexDir="column" alignItems="start" justifyContent="flex-end" 
-        minH="20vh" h="400px" 
+        minH="20vh" h={h}
         w="auto"
         pos="relative"  
         overflow="hidden"
@@ -79,7 +79,7 @@ const RecentEpisodes = ({ title = 'Recent Episodes', boxStyle }) => {
         { !episodes && isLoading && <Spinner /> }
         <Flex justifyContent="space-between">
           <Heading size="md" mb={6}>{title}</Heading>
-          <Button bg={mode('#fafafa', 'gray.800')} borderWidth={1} borderColor={mode('white', 'gray.700')} size="sm" fontSize="xs" rounded="sm">Show More</Button>
+          <Button size="sm" variant="seeMore">Show More</Button>
         </Flex>
         <Swiper {...swiperParams}>
           { episodes && episodes.slice(0,10).map(episode => <SwiperSlide key={episode.id}> <ItemCard {...episode} /> </SwiperSlide>) }

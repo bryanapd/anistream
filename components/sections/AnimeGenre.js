@@ -25,10 +25,10 @@ const AnimeGenre = ({ title = 'Anime Genre', boxStyle }) => {
   }
 
   return(
-    <Flex flexDir="column" alignItems="center" justifyContent="center" minH="40vh" bg="blackAlpha.500" {...boxStyle}>
+    <Flex flexDir="column" alignItems="center" justifyContent="center" minH="40vh" bg="secondary.500" {...boxStyle}>
       <Container maxW="container.xl">
         { !data && isLoading && <Spinner size="sm" />}
-        <Grid templateColumns="repeat(auto-fit, minmax(10rem, 1fr))" gap={8}>
+        <Grid templateColumns="repeat(auto-fit, minmax(10rem, 1fr))" gap={4}>
           <Flex flexDir="column" alignItems="start" justifyContent="center">
             <Heading size="md" mb={4}>{title}</Heading>
             <Text fontSize="xs">Find anime series/movies with genre that you like most</Text>
