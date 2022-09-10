@@ -16,6 +16,7 @@ import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controlle
 const ShowcaseCard = ({ title, cover, genres, description }) => (
   <Flex flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="60vh" pos="relative" pb={4}>
     <Img filter="blur(2px)" pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
+    <Box layerStyle="showcaseLinearBottom" /> 
     <Box layerStyle="showcaseLinearTop" /> 
     <Box layerStyle="showcaseLinearRight" /> 
     <Container maxW="container.xl" pos='relative' zIndex="999">

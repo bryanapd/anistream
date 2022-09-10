@@ -49,6 +49,7 @@ const AppLayout = ({ children, withFooter }) => {
   const [visible, setVisible] = useState(false)
   const [query, setQuery] = useState('')
   const [hideResult, setHideResult] = useState(false)
+  const [backdrop, setBackdrop] = useState('0px')
   const debouncedSearchQuery = useDebounce(query, 2000)
 
   const { data, isLoading, isFetching, isError } = useGetAnimeSearchQuery(query, { skip: debouncedSearchQuery == '' })
@@ -88,12 +89,30 @@ const AppLayout = ({ children, withFooter }) => {
       };
     }, [ref]);
   }
-  useOutsideAlerter(ref)
+
+  const backdropHandler = () => {
+    window.scrollY > 400 ? setBackdrop('8px') : setBackdrop('0px')
+  }
+
+  const loadSearchHandler = query => {
+    router.push({
+      pathname: '/search',
+      query: {
+        name: query
+      }
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', backdropHandler)
+  }, [])
+
+  // useOutsideAlerter(ref)
   return(
     <Fragment>
       <Head>
       </Head>
-      <AppHeader>
+      <AppHeader boxStyle={{ backdropFilter: `blur(${backdrop})` }}>
         <AppBrand logo="../../../hat-icon.png" />
         {/* <AppLinks routes={routes} router={router} /> */}
         <Spacer />
@@ -119,7 +138,7 @@ const AppLayout = ({ children, withFooter }) => {
                         .slice(0, 6)
                         .map(res => <QueryCard key={res.id} {...res} /> ) 
                     }
-                    { result && result.length > 6 && <Button fontSize="xs" bg="yellow.500" rounded={0} rightIcon={<Spinner size="xs" />}>Load More</Button> }
+                    { <Button fontSize="xs" bg="yellow.500" rounded={0} rightIcon={<Spinner size="xs" />} onClick={() => loadSearchHandler(query)}>Load More</Button> }
                   </Flex>
                 )
               }
