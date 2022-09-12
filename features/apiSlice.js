@@ -24,7 +24,13 @@ export const apiSlice = createApi({
       query: genre => `meta/anilist/${genre}`
     }),
     getAnimeSearch: builder.query({
-      query: query => `meta/anilist/${query}`
+      query: query => {
+        const { url, page, perPage } = query
+        return {
+          url: `meta/anilist/${url}`,
+          params: { page, perPage }
+        }
+      }
     }),
     getRecentEpisodes: builder.query({
       query: () => ({
