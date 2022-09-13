@@ -1,8 +1,8 @@
 import Head from "next/head"
+import styles from '../styles/Layout.module.css'
 import { Fragment, useState, useEffect, useRef } from "react"
-import Link from "next/link"
 import { useRouter } from "next/router"
-
+import Link from "next/link"
 import { 
   Box, Button, Container, Flex, Heading, HStack, IconButton, Img, 
   Input, Spacer, Spinner, Text, useColorMode, useColorModeValue as mode
@@ -17,13 +17,6 @@ import useDebounce from "../hooks/useDebounce"
 import { useGetAnimeSearchQuery } from "../features/apiSlice"
 
 
-const routes = [
-  {
-    path: '/',
-    label: 'Explore'
-  },
-]
-
 const QueryCard = ({ id, image, title, status, type, rating, totalEpisodes, releaseDate, color = '#ffff' }) => (
   <Link href={`/anime/${id}`} passHref>
     <HStack alignItems="flex-start" cursor="pointer" _hover={{ bg: '#436bf1' }} p={2}>
@@ -34,8 +27,8 @@ const QueryCard = ({ id, image, title, status, type, rating, totalEpisodes, rele
         objectFit="cover" 
         />
       <Box>
-        <Text fontSize="sm" fontWeight="medium" color="yellow.500" noOfLines={2}>{title.romaji}</Text>
-        <Text fontSize="xs" color="white">{status} &bull; {type} &bull; <Text as="span">{releaseDate}</Text> </Text>
+        <Text fontSize="sm" fontWeight="semibold" color="primary.500" noOfLines={1}>{title.romaji}</Text>
+        <Text fontSize="xs" color="gray.300">{status} &bull; {type.split('_').join(' ')} &bull; <Text as="span">{releaseDate}</Text> </Text>
       </Box>
     </HStack>
   </Link>
@@ -52,7 +45,27 @@ const AppLayout = ({ children, withFooter }) => {
   const [backdrop, setBackdrop] = useState('0px')
   const debouncedSearchQuery = useDebounce(query, 2000)
 
-  const { data, isLoading, isFetching, isError } = useGetAnimeSearchQuery(query, { skip: debouncedSearchQuery == '' })
+  const routes = [
+    {
+      path: '/',
+      label: 'Top Anime'
+    },
+    {
+      path: '/',
+      label: 'Genres'
+    },
+    {
+      path: '/',
+      label: 'Types'
+    },
+    {
+      path: '/',
+      label: 'My List'
+    },
+
+  ]
+
+  const { data, isLoading, isFetching, isError } = useGetAnimeSearchQuery({ url: query }, { skip: debouncedSearchQuery == '' })
   if(isLoading){
     console.log('is loading', isLoading)
   }else if(isError){
@@ -62,11 +75,11 @@ const AppLayout = ({ children, withFooter }) => {
     result = results
   }
 
-  const searchHandler = e => {
+  const searchHandler = event => {
     if(query == ''){
       setQuery('')
     } 
-    setQuery(e.target.value)
+    setQuery(event.target.value)
   }
 
   function useOutsideAlerter(ref) {
@@ -90,38 +103,37 @@ const AppLayout = ({ children, withFooter }) => {
     }, [ref]);
   }
 
-  const backdropHandler = () => {
-    window.scrollY > 400 ? setBackdrop('8px') : setBackdrop('0px')
+  const submitQueryHandler = event => {
+    event.preventDefault()
+    router.push({ pathname: '/search', query: { name: query } })
   }
 
-  const loadSearchHandler = query => {
-    router.push({
-      pathname: '/search',
-      query: {
-        name: query
-      }
-    })
+  const backdropHandler = () => {
+    if(router.route)
+    window.scrollY > 20 ? setBackdrop('8px') : setBackdrop('0px')
   }
 
   useEffect(() => {
     window.addEventListener('scroll', backdropHandler)
   }, [])
 
-  // useOutsideAlerter(ref)
+  useOutsideAlerter(ref)
   return(
     <Fragment>
       <Head>
       </Head>
-      <AppHeader boxStyle={{ backdropFilter: `blur(${backdrop})` }}>
+      <AppHeader boxStyle={{ bgColor: 'rgba(17, 25, 40, 0.75)', backdropFilter: `blur(${backdrop}) saturate(180%)` }}>
         <AppBrand logo="../../../hat-icon.png" />
-        {/* <AppLinks routes={routes} router={router} /> */}
+        <Spacer />
+        <AppLinks routes={routes} router={router} />
         <Spacer />
         {
           visible && (
-            <Box pos="relative">
+            <Box as="form" method="POST" onSubmit={submitQueryHandler} pos="relative">
               <Input 
                 ref={ref} value={query} 
-                variant="solid" 
+                variant="outline" 
+                borderColor="rgba(255, 255, 255, 0.125)"
                 rounded={0} 
                 w={{ base: 'auto', md: '300px' }} 
                 onChange={searchHandler} 
@@ -129,8 +141,20 @@ const AppLayout = ({ children, withFooter }) => {
                 placeholder="Search your favorite anime..."
                 _placeholder={{ fontSize: 'xs' }} />
               {
-                result && hideResult == false && (
-                  <Flex w="300px" flexDir="column" bg="black" pos="fixed" overflow="hidden" zIndex="9999999999999999">
+                result && query != '' && hideResult == false && (
+                  <Flex 
+                    w="300px"
+                    flexDir="column" 
+                    pos="absolute"
+                    overflow="hidden" zIndex="99" 
+                    border="1px solid rgba(255, 255, 255, 0.125)" 
+                    bgColor="rgba(17, 25, 40, 0.75)" 
+                    backdropFilter="blur(16px) saturate(180%)"
+                    sx={{
+                      '&::-webkit-backdrop-filter': {
+                        backdropFilter: 'blur(16px) saturate(180%)'
+                      }
+                    }}>
                     { !result && <Spinner size="sm" color="yellow.500" /> }
                     { 
                       result && [...result]
@@ -138,7 +162,7 @@ const AppLayout = ({ children, withFooter }) => {
                         .slice(0, 6)
                         .map(res => <QueryCard key={res.id} {...res} /> ) 
                     }
-                    { <Button fontSize="xs" bg="yellow.500" rounded={0} rightIcon={<Spinner size="xs" />} onClick={() => loadSearchHandler(query)}>Load More</Button> }
+                    { <Button fontSize="xs" bg="yellow.500" rounded={0} rightIcon={<Spinner size="xs" />} onClick={submitQueryHandler}>Load More</Button> }
                   </Flex>
                 )
               }

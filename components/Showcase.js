@@ -10,6 +10,7 @@ import { useGetAnimeDetailsByIdQuery, useGetTrendingAnimeQuery } from "../featur
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller, Thumbs } from "swiper"
+import { SkeletonHeroCard } from "./SkeletonCard";
 
 
 
@@ -17,7 +18,7 @@ const ShowcaseCard = ({ title, cover, genres, description }) => (
   <Flex flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="60vh" pos="relative" pb={4}>
     <Img filter="blur(2px)" pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
     <Box layerStyle="showcaseLinearBottom" /> 
-    <Box layerStyle="showcaseLinearTop" /> 
+    {/* <Box layerStyle="showcaseLinearTop" />  */}
     <Box layerStyle="showcaseLinearRight" /> 
     <Container maxW="container.xl" pos='relative' zIndex="999">
       <Grid templateColumns="auto 400px" gap={4}>
@@ -49,7 +50,7 @@ const Showcase = ({ }) => {
   let anime
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
   const [swiperIndex, setSwiperIndex] = useState(0)
-  const { data, isLoading, isError } = useGetTrendingAnimeQuery()
+  const { data, isLoading, isFetching, isError } = useGetTrendingAnimeQuery()
 
   if(data){
     const { results } = data
@@ -102,19 +103,21 @@ const Showcase = ({ }) => {
       { 
       anime && (
         <Fragment>
-          { !data && isLoading && <Spinner color="primary.500" size="sm" />}
-          <Swiper {...swiperParams}>
-            { 
-              [...anime]
-              .sort((a, b) => b.rating - a.rating)
-              .filter(f => f.status == 'Ongoing' && f.rating >= 70)
-              .map(anime => (
-                <SwiperSlide key={`slide_${anime.id}`}>
-                  <ShowcaseCard {...anime} />
-                </SwiperSlide>)
-              )
-            }
-          </Swiper>
+          <Box>
+            <Swiper {...swiperParams}>
+              { !data && isLoading && <SwiperSlide> <SkeletonHeroCard /> </SwiperSlide> }
+              { 
+                [...anime]
+                .sort((a, b) => b.rating - a.rating)
+                .filter(f => f.status == 'Ongoing' && f.rating >= 70)
+                .map(anime => (
+                  <SwiperSlide key={`slide_${anime.id}`}>
+                    <ShowcaseCard {...anime} />
+                  </SwiperSlide>)
+                )
+              }
+            </Swiper>
+          </Box>
           <Box mt={10}>
             <Heading size="md" textAlign="center" mb={6}>Top Trending Weekly</Heading>
             <Swiper onSwiper={setThumbsSwiper} {...thumbsParams}>

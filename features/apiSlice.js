@@ -32,6 +32,15 @@ export const apiSlice = createApi({
         }
       }
     }),
+    getAnimeAdvacedSearch: builder.query({
+      query: advancedQuery => {
+        const { query, page, perPage, season, format, sort, genres, id, year, status } = advancedQuery
+        return{
+          url: `meta/anilist/advanced-search`,
+          params: { query, page, perPage, season, format, sort, genres, id, year, status }
+        }
+      }
+    }),
     getRecentEpisodes: builder.query({
       query: () => ({
         url: 'meta/anilist/recent-episodes',
@@ -65,6 +74,7 @@ export const {
   useGetTrendingAnimeQuery,
   useGetAnimeGenreQuery,
   useGetAnimeSearchQuery,
+  useGetAnimeAdvacedSearchQuery,
   useGetRecentEpisodesQuery,
   useGetAnimeDetailsByIdQuery,
   useGetAnimeEpisodeByIdQuery
