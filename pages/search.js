@@ -1,8 +1,7 @@
-import { Fragment, useState } from "react";
-import { useRouter } from "next/router";
+import { Fragment, useState, useEffect } from "react";
 import Link from "next/link";
-import { Box, Heading, Text, Button, useColorModeValue as mode, Container, Spinner, HStack } from "@chakra-ui/react";
-import { IoCloseSharp } from "react-icons/io5";
+import { Box, Heading, Text, Button, useColorModeValue as mode, Container, Spinner, HStack, Icon, Flex, Grid } from "@chakra-ui/react";
+import { IoCloseSharp, IoPricetags } from "react-icons/io5";
 
 import AppLayout from "../layout/AppLayout";
 import { AppSpacer } from "../components/Header";
@@ -10,44 +9,37 @@ import { FormInput, FormSelect } from "../components/Form";
 import { ItemCard } from "../components/sections/RecentEpisodes";
 import { SkeletonItemCard } from "../components/SkeletonCard";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Lazy, FreeMode, Grid, Pagination, EffectFade } from "swiper";
-
-import useDebounce from "../hooks/useDebounce";
 import { useGetAnimeAdvacedSearchQuery, useGetAnimeSearchQuery } from "../features/apiSlice";
+import { setSearchValue, setYear, setFormat, setSeason, setSelectedGenre, removeSelectedGenre, removeSearchQuery } from "../features/filterSlice";
 import { useSelector } from "react-redux";
-import queryString from 'query-string'
+import { useDispatch } from "react-redux";
+import useDebounce from "../hooks/useDebounce";
+import filtersValue from '../lib/filters'
 
 
 const Search = ({ title = '', props }) => {
   let result = []
-  const router = useRouter()
-  const [query, setQuery] = useState(router.query.name)
-  const debouncedSearchQuery = useDebounce(query, 3000)
-  const [year, setYear] = useState(null)
-  const [season, setSeason] = useState(null)
-  const [format, setFormat] = useState(null)
-  const [selectedGenre, setSelectedGenre] = useState([])
-  const [filter, setFilter] = useState(false)
+  const dispatch = useDispatch()
+  // const debouncedSearchQuery = useDebounce(query, 3000)
+  const filters = useSelector(state => state.filters)
+  const anime = useSelector(state => state.filters.search)
+  const genres = useSelector(state => state.filters.genres)
+  const season = useSelector(state => state.filters.season)
+  const year = useSelector(state => state.filters.year)
+  const format = useSelector(state => state.filters.format)
+
+  console.log(filters, 'filters')
+  console.log("selected genres from store", genres)
+
   const { data, isLoading, isFetching, isError } = useGetAnimeAdvacedSearchQuery({ 
-    query: query ? query : undefined, 
-    genres: selectedGenre.length > 0 ? selectedGenre.map(genre => `"${genre}"`) : undefined,
+    query: anime ? anime : undefined,
+    genres: genres.length > 0 ? genres.map(genre => `"${genre}"`) : undefined,
     page: 1, 
     perPage: 50, 
     season: season ? season : undefined,
     format: format ? format : undefined,
     year: year ? year : undefined
   })
-
-  console.log("selected", selectedGenre)
-  const parsed = queryString.stringify(selectedGenre)
-  console.log(parsed, "parsed array")
-
-  const genres = useSelector(state => state.genres)
-  const years = useSelector(state => state.years)
-  const seasons = useSelector(state => state.seasons)
-  const formats = useSelector(state => state.formats)
-
   if(data){
     const { results } = data
     result = results
@@ -55,110 +47,123 @@ const Search = ({ title = '', props }) => {
     console.log(isError)
   }
 
-  const swiperParams = {
-    lazy: true,
-    // freeMode: true,
-    slidesPerView: 5,
-    spaceBetween: 10,
-    modules: [Autoplay, Lazy, FreeMode, Grid, Pagination, EffectFade],
-    pagination: {
-      el: '.custom-pagination',
-      clickable: true,
-      type: 'bullets'
-    },
-    slidesPerGroup: 10,
-    grid: {
-      rows: 3,
-      fill: 'row'
-    },
+  const handleQuery = event => {
+    dispatch(setSearchValue(event.target.value))
   }
-
-  const handleQuery = e => {
-    setQuery(e.target.value)
+  const handleSeason = event => {
+    dispatch(setSeason(event.target.value))
   }
-  const handleGenre = e => {
-    let index = e.nativeEvent.target.selectedIndex;
-    let genreLabel = e.nativeEvent.target[index].text;
-    const isSelected = selectedGenre.includes(genreLabel)
+  const handleYear = event => {
+    dispatch(setYear(event.target.value))
+  }
+  const handleFormat = event => {
+    dispatch(setFormat(event.target.value))
+  }
+  const handleGenre = event => {
+    let index = event.nativeEvent.target.selectedIndex;
+    let genreLabel = event.nativeEvent.target[index].text;
+    const isSelected = genres.includes(genreLabel)
     if(isSelected){
-      setSelectedGenre((prev) => prev.filter((label) => label !== genreLabel))
+      dispatch(removeSelectedGenre(genreLabel))
     }else{
-      setSelectedGenre((prev) => [...prev, genreLabel]);
+      dispatch(setSelectedGenre(genreLabel))
     }
-    // setSelectedGenre({...selectedGenre, genre: label })
-  }
-  const handleYear = e => {
-    setYear(e.target.value)
-  }
-  const handleSeason = e => {
-    setSeason(e.target.value)
-  }
-  const handleFormat = e => {
-    setFormat(e.target.value)
-  }
-
-  const handleFilter = () => {
-    if(query != null || genres.length >= 1 || year != null || season != null || format != null){
-      setFilter(true)
-    }
-    else if (query == '' || query == null) {
-      setFilter(false)
-    }
+    // if(isSelected){
+    //   setSelectedGenre((prev) => prev.filter((label) => label !== genreLabel))
+    // }else{
+    //   setSelectedGenre((prev) => [...prev, genreLabel]);
+    // }
   }
 
   return(
     <AppLayout>
       <AppSpacer />
-      <Container maxW="container.xl" mt={20}>
+      <Container maxW="container.xl" minH="90vh" mt={20}>
         <HStack spacing={4} mb={10}>
           <FormInput 
             label="Search" 
-            defaultValue={query}
+            defaultValue={anime}
             onChange={handleQuery}
             controlProps={{ w: 'auto' }} 
-            right={ query != '' && <IoCloseSharp />}
-            value={query}
+            right={anime != '' && <IoCloseSharp />}
+            value={anime}
             rightProps={{
-              onClick: () => setQuery(''),
+              onClick: () => dispatch(removeSearchQuery()),
               _hover: { transform: 'scale(1.2)', transition: 'all 300ms ease' },
               cursor: 'pointer'
             }} />
           <FormSelect
             label="Genres"
             defaultValue="Any"
-            options={genres}
+            options={filtersValue.genres}
             onChange={handleGenre}
             controlProps={{ w: { base: 'auto', md: '200px' } }} />
           <FormSelect
             label="Year"
             defaultValue="Any"
-            options={years}
+            options={filtersValue.years}
             onChange={handleYear}
             controlProps={{  w: { base: 'auto', md: '200px' } }}  />
           <FormSelect
             label="Season"
             defaultValue="Any"
-            options={seasons}
+            options={filtersValue.seasons}
             onChange={handleSeason}
             controlProps={{  w: { base: 'auto', md: '200px' } }}  />
           <FormSelect
             label="Format"
             defaultValue="Any"
-            options={formats}
+            options={filtersValue.formats}
             onChange={handleFormat}
             controlProps={{  w: { base: 'auto', md: '200px' } }}  />
         </HStack>
+
+        {/* <Box display={ query ? 'block' : 'none' }>
+         <HStack mb={4}>
+          <Icon as={IoPricetags} />
+          <Heading size="sm">Tags </Heading>
+         </HStack>
+         <HStack>
+          <Button size="xs" variant="primary">{query}</Button>
+          { (selectedGenre || []).map((genre, gKey) => <Button key={gKey} size="xs" variant="primary">{genre}</Button> )}
+         </HStack>
+        </Box> */}
+
         <Box my={10}>
-          {/* { result && <Heading size="sm" color="gray.500" mb={4}>TV Shows</Heading> } */}
-          <Swiper {...swiperParams}>
-            { !data && isLoading && Array.from({ length: 10 }).map((item, itemKey) => <SwiperSlide key={itemKey}> <SkeletonItemCard /> </SwiperSlide>) }
-            { result && [...result].sort((a, b) => b.rating - a.rating).map(res => <SwiperSlide key={res.id}> <ItemCard {...res} /> </SwiperSlide>) }
-          </Swiper>
+          <Grid templateColumns="repeat(auto-fit, minmax(13rem, 1fr))" gap={4}>
+            { !data && isLoading && Array.from({ length: 10 }).map((item, itemKey) => <SkeletonItemCard key={itemKey} /> ) }
+            { result && [...result].sort((a, b) => b.rating - a.rating).map(res => <ItemCard key={res.id} {...res} /> ) }
+          </Grid>
         </Box>
-        <div className="custom-pagination" style={{ marginTop: 20, display: 'flex', margin: 'auto', alignItems: 'center', justifyContent: 'center', minHeight: '3vh' }} />
       </Container>
     </AppLayout>
   )
 }
 
 export default Search
+
+
+// const swiperParams = {
+//   lazy: true,
+//   // freeMode: true,
+//   slidesPerView: 5,
+//   spaceBetween: 10,
+//   modules: [Autoplay, Lazy, FreeMode, Grid, Pagination, EffectFade],
+//   pagination: {
+//     el: '.custom-pagination',
+//     clickable: true,
+//     type: 'bullets'
+//   },
+//   slidesPerGroup: 10,
+//   grid: {
+//     rows: 3,
+//     fill: 'row'
+//   },
+// }
+
+// <Swiper {...swiperParams}>
+//   { !data && isLoading && Array.from({ length: 10 }).map((item, itemKey) => <SwiperSlide key={itemKey}> <SkeletonItemCard /> </SwiperSlide>) }
+//   { result && [...result].sort((a, b) => b.rating - a.rating).map(res => <SwiperSlide key={res.id}> <ItemCard {...res} /> </SwiperSlide>) }
+// </Swiper>
+
+// <div className="custom-pagination" style={{ marginTop: 20, display: 'flex', margin: 'auto', alignItems: 'center', justifyContent: 'center', minHeight: '3vh' }} />
