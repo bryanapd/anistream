@@ -1,8 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import queryString from 'query-string'
 
 export const apiSlice = createApi({
   reducerPath: 'apiSlice',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://consumet-api.herokuapp.com/' }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: 'https://consumet-api.herokuapp.com/', 
+    paramsSerializer: (params) => 
+      queryString.stringify(params, { arrayFormat: 'comma',  })
+  }),
   endpoints: builder => ({
     getPopularAnime: builder.query({
       query: () => ({
@@ -36,8 +41,8 @@ export const apiSlice = createApi({
       query: advancedQuery => {
         const { query, page, perPage, season, format, sort, genres, id, year, status } = advancedQuery
         return{
-          url: `meta/anilist/advanced-search`,
-          params: { query, page, perPage, season, format, sort, genres, id, year, status }
+          url: `meta/anilist/advanced-search?${genres ? `genres=[${genres}]` : ''}`,
+          params: { query, page, perPage, season, format, sort, id, year, status }
         }
       }
     }),

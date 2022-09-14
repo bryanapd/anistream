@@ -34,13 +34,13 @@ export const FormTags = ({ tags = [], separator = ',' }) => {
   )
 }
 
-export const FormInput = ({ label, left, right, rightProps, controlProps, tag, onChange, inputRef, ...rest }) => (
+export const FormInput = ({ label, left, right, rightProps, controlProps, tag, onChange, inputRef, onRightPropsClick, ...rest }) => (
   <FormControl {...controlProps}>
     <FormLabel fontSize="sm" fontWeight="bold">{label} {tag && <Tag size="sm">{tag}</Tag>}</FormLabel>
     <InputGroup>
       { left && <InputLeftElement children={left} /> }
       <Input ref={inputRef} onChange={onChange} {...rest} />
-      { right && <InputRightElement {...rightProps}>{right}</InputRightElement> }
+      { right && <InputRightElement onClick={onRightPropsClick} {...rightProps}>{right}</InputRightElement> }
     </InputGroup>
   </FormControl>
 )
@@ -56,7 +56,7 @@ export const FormTextArea = ({ label, left, right, controlProps, tag, ...rest })
   </FormControl>
 )
 
-export const FormSelect = ({ label, left, right, rightProps, controlProps, options, disabled, ...rest }) => (
+export const FormSelect = ({ label, left, right, rightProps, controlProps, options, disabled, onRightPropsClick, ...rest }) => (
   <FormControl {...controlProps}>
     <FormLabel fontSize="sm" fontWeight="bold">{label}</FormLabel>
     <InputGroup>
@@ -65,7 +65,7 @@ export const FormSelect = ({ label, left, right, rightProps, controlProps, optio
         <option key="selector" value="" hidden>Any</option>
         { (options || []).map(option => <option key={option.value} value={option.value} disabled={disabled}>{option.label}</option>) }
       </Select>
-      { right && <InputRightElement w="4.5rem" {...rightProps}>{right}</InputRightElement> }
+      { right && <InputRightElement w="4.5rem" onClick={onRightPropsClick} {...rightProps}>{right}</InputRightElement> }
     </InputGroup>
   </FormControl>
 )

@@ -1,12 +1,12 @@
 import { Fragment, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { 
-  Box, Heading, Text, Button, useColorModeValue as mode, Container, Spinner, HStack
-} from "@chakra-ui/react";
+import { Box, Heading, Text, Button, useColorModeValue as mode, Container, Spinner, HStack } from "@chakra-ui/react";
+import { IoCloseSharp } from "react-icons/io5";
 
 import AppLayout from "../layout/AppLayout";
 import { AppSpacer } from "../components/Header";
+import { FormInput, FormSelect } from "../components/Form";
 import { ItemCard } from "../components/sections/RecentEpisodes";
 import { SkeletonItemCard } from "../components/SkeletonCard";
 
@@ -15,15 +15,14 @@ import { Autoplay, Lazy, FreeMode, Grid, Pagination, EffectFade } from "swiper";
 
 import useDebounce from "../hooks/useDebounce";
 import { useGetAnimeAdvacedSearchQuery, useGetAnimeSearchQuery } from "../features/apiSlice";
-import { FormInput, FormSelect } from "../components/Form";
-import { IoCloseSharp } from "react-icons/io5";
 import { useSelector } from "react-redux";
+import queryString from 'query-string'
 
 
 const Search = ({ title = '', props }) => {
   let result = []
   const router = useRouter()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(router.query.name)
   const debouncedSearchQuery = useDebounce(query, 3000)
   const [year, setYear] = useState(null)
   const [season, setSeason] = useState(null)
@@ -32,6 +31,7 @@ const Search = ({ title = '', props }) => {
   const [filter, setFilter] = useState(false)
   const { data, isLoading, isFetching, isError } = useGetAnimeAdvacedSearchQuery({ 
     query: query ? query : undefined, 
+    genres: selectedGenre.length > 0 ? selectedGenre.map(genre => `"${genre}"`) : undefined,
     page: 1, 
     perPage: 50, 
     season: season ? season : undefined,
@@ -39,21 +39,18 @@ const Search = ({ title = '', props }) => {
     year: year ? year : undefined
   })
 
+  console.log("selected", selectedGenre)
+  const parsed = queryString.stringify(selectedGenre)
+  console.log(parsed, "parsed array")
+
   const genres = useSelector(state => state.genres)
   const years = useSelector(state => state.years)
   const seasons = useSelector(state => state.seasons)
   const formats = useSelector(state => state.formats)
 
-  console.log("selected genre", selectedGenre)
-  console.log("year", year)
-  console.log("filterstatus", filter)
-
   if(data){
     const { results } = data
     result = results
-    // console.log("data", data)
-    // console.log(data.currentPage)
-    // console.log("search res", results)
   }else if(isError){
     console.log(isError)
   }
@@ -116,16 +113,22 @@ const Search = ({ title = '', props }) => {
         <HStack spacing={4} mb={10}>
           <FormInput 
             label="Search" 
-            defaultValue={router.query.name}
+            defaultValue={query}
             onChange={handleQuery}
-            controlProps={{  w: 'auto' }} 
-            right={<IoCloseSharp />} />
+            controlProps={{ w: 'auto' }} 
+            right={ query != '' && <IoCloseSharp />}
+            value={query}
+            rightProps={{
+              onClick: () => setQuery(''),
+              _hover: { transform: 'scale(1.2)', transition: 'all 300ms ease' },
+              cursor: 'pointer'
+            }} />
           <FormSelect
             label="Genres"
             defaultValue="Any"
             options={genres}
             onChange={handleGenre}
-            controlProps={{  w: { base: 'auto', md: '200px' } }} />
+            controlProps={{ w: { base: 'auto', md: '200px' } }} />
           <FormSelect
             label="Year"
             defaultValue="Any"
@@ -144,7 +147,6 @@ const Search = ({ title = '', props }) => {
             options={formats}
             onChange={handleFormat}
             controlProps={{  w: { base: 'auto', md: '200px' } }}  />
-          <Button size="md" variant="solid" bg="primary.500" rounded="sm" onClick={handleFilter}>Search</Button>
         </HStack>
         <Box my={10}>
           {/* { result && <Heading size="sm" color="gray.500" mb={4}>TV Shows</Heading> } */}
