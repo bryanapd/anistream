@@ -7,14 +7,14 @@ import {
   Box, Button, Container, Flex, Heading, HStack, IconButton, Img, 
   Input, Spacer, Spinner, Text, useColorMode, useColorModeValue as mode
 } from "@chakra-ui/react"
-import { 
-  IoChevronDown, IoChevronUp, IoMoonOutline, IoSearch, IoSunnyOutline 
-} from "react-icons/io5"
+import { IoChevronDown, IoChevronUp, IoMoonOutline, IoSearch, IoSunnyOutline } from "react-icons/io5"
 
 import { AppBrand, AppHeader, AppLinks, AppSpacer } from "../components/Header"
 
 import useDebounce from "../hooks/useDebounce"
 import { useGetAnimeSearchQuery } from "../features/apiSlice"
+import { setSearchValue } from "../features/filterSlice"
+import { useDispatch, useSelector } from "react-redux"
 
 
 const QueryCard = ({ id, image, title, status, type, rating, totalEpisodes, releaseDate, color = '#ffff' }) => (
@@ -40,30 +40,32 @@ const AppLayout = ({ children, withFooter }) => {
   const ref = useRef(null)
   const { colorMode, toggleColorMode } = useColorMode()
   const [visible, setVisible] = useState(false)
-  const [query, setQuery] = useState('')
   const [hideResult, setHideResult] = useState(false)
   const [backdrop, setBackdrop] = useState('0px')
+
+  const dispatch = useDispatch()
+  const query = useSelector(state => state.filters.search)
   const debouncedSearchQuery = useDebounce(query, 2000)
 
-  const routes = [
-    {
-      path: '/',
-      label: 'Top Anime'
-    },
-    {
-      path: '/',
-      label: 'Genres'
-    },
-    {
-      path: '/',
-      label: 'Types'
-    },
-    {
-      path: '/',
-      label: 'My List'
-    },
+  // const routes = [
+  //   {
+  //     path: '/',
+  //     label: 'Top Anime'
+  //   },
+  //   {
+  //     path: '/',
+  //     label: 'Genres'
+  //   },
+  //   {
+  //     path: '/',
+  //     label: 'Types'
+  //   },
+  //   {
+  //     path: '/',
+  //     label: 'My List'
+  //   },
 
-  ]
+  // ]
 
   const { data, isLoading, isFetching, isError } = useGetAnimeSearchQuery({ url: query }, { skip: debouncedSearchQuery == '' })
   if(isLoading){
@@ -73,13 +75,6 @@ const AppLayout = ({ children, withFooter }) => {
   }else if(data){
     const { results } = data
     result = results
-  }
-
-  const searchHandler = event => {
-    if(query == ''){
-      setQuery('')
-    } 
-    setQuery(event.target.value)
   }
 
   function useOutsideAlerter(ref) {
@@ -103,6 +98,10 @@ const AppLayout = ({ children, withFooter }) => {
     }, [ref]);
   }
 
+  const searchHandler = event => {
+    dispatch(setSearchValue(event.target.value))
+  }
+
   const submitQueryHandler = event => {
     event.preventDefault()
     router.push({ pathname: '/search', query: { name: query } })
@@ -122,10 +121,10 @@ const AppLayout = ({ children, withFooter }) => {
     <Fragment>
       <Head>
       </Head>
-      <AppHeader boxStyle={{ bgColor: 'rgba(17, 25, 40, 0.75)', backdropFilter: `blur(${backdrop}) saturate(180%)` }}>
+      <AppHeader boxStyle={{ backdropFilter: `blur(${backdrop}) saturate(180%)` }}>
         <AppBrand logo="../../../hat-icon.png" />
         <Spacer />
-        <AppLinks routes={routes} router={router} />
+        <AppLinks router={router} />
         <Spacer />
         {
           visible && (

@@ -1,6 +1,10 @@
 import { Fragment, useState, useEffect } from "react";
 import Link from "next/link";
-import { Box, Heading, Text, Button, useColorModeValue as mode, Container, Spinner, HStack, Icon, Flex, Grid } from "@chakra-ui/react";
+import { 
+  Box, Heading, Text, Button, useColorModeValue as mode, Container, Spinner, 
+  HStack, Icon, Flex, Grid, 
+} from "@chakra-ui/react";
+import Select from 'react-select'
 import { IoCloseSharp, IoPricetags } from "react-icons/io5";
 
 import AppLayout from "../layout/AppLayout";
@@ -33,7 +37,7 @@ const Search = ({ title = '', props }) => {
 
   const { data, isLoading, isFetching, isError } = useGetAnimeAdvacedSearchQuery({ 
     query: anime ? anime : undefined,
-    genres: genres.length > 0 ? genres.map(genre => `"${genre}"`) : undefined,
+    genres: genres.length > 0 ? genres.map(genre => `"${genre.value}"`) : undefined,
     page: 1, 
     perPage: 50, 
     season: season ? season : undefined,
@@ -63,6 +67,7 @@ const Search = ({ title = '', props }) => {
     let index = event.nativeEvent.target.selectedIndex;
     let genreLabel = event.nativeEvent.target[index].text;
     const isSelected = genres.includes(genreLabel)
+    console.log("selected genre is?", isSelected)
     if(isSelected){
       dispatch(removeSelectedGenre(genreLabel))
     }else{
@@ -75,6 +80,12 @@ const Search = ({ title = '', props }) => {
     // }
   }
 
+  const selectProps = {
+    controlProps: { w: { base: 'auto', md: '200px' } },
+    rounded: 'sm',
+    bg: mode('gray.100', 'white')
+  }
+
   return(
     <AppLayout>
       <AppSpacer />
@@ -83,52 +94,26 @@ const Search = ({ title = '', props }) => {
           <FormInput 
             label="Search" 
             defaultValue={anime}
-            onChange={handleQuery}
-            controlProps={{ w: 'auto' }} 
-            right={anime != '' && <IoCloseSharp />}
             value={anime}
-            rightProps={{
-              onClick: () => dispatch(removeSearchQuery()),
-              _hover: { transform: 'scale(1.2)', transition: 'all 300ms ease' },
-              cursor: 'pointer'
-            }} />
-          <FormSelect
-            label="Genres"
-            defaultValue="Any"
-            options={filtersValue.genres}
-            onChange={handleGenre}
-            controlProps={{ w: { base: 'auto', md: '200px' } }} />
-          <FormSelect
-            label="Year"
-            defaultValue="Any"
-            options={filtersValue.years}
-            onChange={handleYear}
-            controlProps={{  w: { base: 'auto', md: '200px' } }}  />
-          <FormSelect
-            label="Season"
-            defaultValue="Any"
-            options={filtersValue.seasons}
-            onChange={handleSeason}
-            controlProps={{  w: { base: 'auto', md: '200px' } }}  />
-          <FormSelect
-            label="Format"
-            defaultValue="Any"
-            options={filtersValue.formats}
-            onChange={handleFormat}
-            controlProps={{  w: { base: 'auto', md: '200px' } }}  />
+            onChange={handleQuery}
+            right={anime != '' && <IoCloseSharp />}
+            rightProps={{ onClick: () => dispatch(removeSearchQuery()) }} 
+            {...selectProps} />
+          <FormSelect label="Genres" options={filtersValue.genres} onChange={handleGenre} {...selectProps} />
+          <FormSelect label="Year" options={filtersValue.years} onChange={handleYear} {...selectProps} />
+          <FormSelect label="Season" options={filtersValue.seasons} onChange={handleSeason} {...selectProps} />
+          <FormSelect label="Format" options={filtersValue.formats} onChange={handleFormat} {...selectProps} />
         </HStack>
-
-        {/* <Box display={ query ? 'block' : 'none' }>
+        <Box>
          <HStack mb={4}>
           <Icon as={IoPricetags} />
           <Heading size="sm">Tags </Heading>
          </HStack>
          <HStack>
-          <Button size="xs" variant="primary">{query}</Button>
-          { (selectedGenre || []).map((genre, gKey) => <Button key={gKey} size="xs" variant="primary">{genre}</Button> )}
+          { anime && <Button size="xs" variant="primary">{anime}</Button> }
+          { genres.length != 0 && (genres || []).map((genre, gKey) => <Button key={gKey} size="xs" variant="primary">{genre}</Button> )}
          </HStack>
-        </Box> */}
-
+        </Box>
         <Box my={10}>
           <Grid templateColumns="repeat(auto-fit, minmax(13rem, 1fr))" gap={4}>
             { !data && isLoading && Array.from({ length: 10 }).map((item, itemKey) => <SkeletonItemCard key={itemKey} /> ) }
@@ -139,7 +124,6 @@ const Search = ({ title = '', props }) => {
     </AppLayout>
   )
 }
-
 export default Search
 
 

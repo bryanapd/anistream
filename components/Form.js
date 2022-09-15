@@ -56,7 +56,7 @@ export const FormTextArea = ({ label, left, right, controlProps, tag, ...rest })
   </FormControl>
 )
 
-export const FormSelect = ({ label, left, right, rightProps, controlProps, options, disabled, onRightPropsClick, ...rest }) => (
+export const FormSelect = ({ label, left, right, rightProps, controlProps, options, disabled, onRightPropsClick, style, ...rest }) => (
   <FormControl {...controlProps}>
     <FormLabel fontSize="sm" fontWeight="bold">{label}</FormLabel>
     <InputGroup>
