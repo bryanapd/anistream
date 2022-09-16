@@ -47,25 +47,25 @@ const AppLayout = ({ children, withFooter }) => {
   const query = useSelector(state => state.filters.search)
   const debouncedSearchQuery = useDebounce(query, 2000)
 
-  // const routes = [
-  //   {
-  //     path: '/',
-  //     label: 'Top Anime'
-  //   },
-  //   {
-  //     path: '/',
-  //     label: 'Genres'
-  //   },
-  //   {
-  //     path: '/',
-  //     label: 'Types'
-  //   },
-  //   {
-  //     path: '/',
-  //     label: 'My List'
-  //   },
+  const routes = [
+    {
+      path: '/',
+      label: 'Top Anime'
+    },
+    {
+      path: '/',
+      label: 'Genres'
+    },
+    {
+      path: '/',
+      label: 'Types'
+    },
+    {
+      path: '/',
+      label: 'My List'
+    },
 
-  // ]
+  ]
 
   const { data, isLoading, isFetching, isError } = useGetAnimeSearchQuery({ url: query }, { skip: debouncedSearchQuery == '' })
   if(isLoading){
@@ -120,11 +120,15 @@ const AppLayout = ({ children, withFooter }) => {
   return(
     <Fragment>
       <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,900&display=swap" rel="stylesheet" />
       </Head>
       <AppHeader boxStyle={{ backdropFilter: `blur(${backdrop}) saturate(180%)` }}>
-        <AppBrand logo="../../../hat-icon.png" />
-        <Spacer />
-        <AppLinks router={router} />
+        <AppBrand logo="../../../icon.png" />
+        {/* <Spacer /> */}
+        <AppLinks router={router} routes={routes} />
         <Spacer />
         {
           visible && (

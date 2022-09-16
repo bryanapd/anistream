@@ -2,19 +2,20 @@ import { Fragment, useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { 
   Box, Text, Heading, Container, Img, Spinner, Stack, 
-  HStack, Flex, Divider, Tag, Button, Grid,
+  HStack, Flex, Divider, Tag, Button, Grid, Icon, IconButton, StackDivider, Menu, MenuButton, MenuList, MenuItem,
 } from "@chakra-ui/react";
-import { IoPlaySharp } from "react-icons/io5";
+import { BsPlay, BsPlayCircle, BsPlus } from "react-icons/bs"
+
+import { AddToList } from "./Menu";
+import { SkeletonHeroCard } from "./SkeletonCard";
+
+import ReactStars from "react-rating-stars-component";
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller, Thumbs } from "swiper"
 
 import { useGetAnimeDetailsByIdQuery, useGetTrendingAnimeQuery } from "../features/apiSlice";
 
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller, Thumbs } from "swiper"
-import { SkeletonHeroCard } from "./SkeletonCard";
-
-
-
-const ShowcaseCard = ({ title, cover, genres, description }) => (
+const ShowcaseCard = ({ id, title, cover, genres, description, rating, starsProps }) => (
   <Flex flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="60vh" pos="relative" pb={4}>
     <Img filter="blur(2px)" pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
     <Box layerStyle="showcaseLinearBottom" /> 
@@ -24,11 +25,20 @@ const ShowcaseCard = ({ title, cover, genres, description }) => (
       <Grid templateColumns="auto 400px" gap={4}>
         <Flex flexDir="column">
           <Heading size="lg" mb={2}>{title.romaji}</Heading>
-          <HStack spacing={4} mb={4}>
-            { genres.map((genre, genreKey) => <Tag key={genreKey} bg="primary.500" fontSize="xs" color="white" fontWeight="bold" rounded="sm">{genre}</Tag> ) }
+          <Stack direction="row" divider={<StackDivider />} spacing={4} mb={4}>
+            <ReactStars value={(rating / 100) * 5} {...starsProps}  />
+            <HStack>
+              { genres.map((genre, genreKey) => <Tag key={genreKey} bg="primary.500" fontSize="xs" color="white" fontWeight="bold" rounded="sm">{genre}</Tag> ) }
+            </HStack>
+          </Stack>
+          <Text fontSize="sm" noOfLines={{ base: 5, md: 5 }} whiteSpace="pre-line" mb={6}>{description && description.replace(/<[^>]*>?/gm, '')}</Text>
+          <HStack spacing={5}>
+            <Link href={`/anime/${id}`}>
+              <Button w="max" size="lg" variant="ghost" leftIcon={<BsPlayCircle size="40px" />} iconSpacing={2} p={0}>Play</Button>
+            </Link>
+            {/* <Button w="max" size="lg" variant="ghost" leftIcon={<BsPlus size="40px" />} iconSpacing={0} p={0}>Add to List</Button> */}
+            <AddToList icon={BsPlus} />
           </HStack>
-          <Text fontSize="sm" noOfLines={{ base: 5, md: 10 }} whiteSpace="pre-line" mb={10}>{description.replace(/<[^>]*>?/gm, '' || '')}</Text>
-          <Button variant="primary" w="max" iconSpacing={1} leftIcon={<IoPlaySharp size="25px" />}>Play</Button>
         </Flex>
       </Grid>
     </Container>
@@ -98,6 +108,18 @@ const Showcase = ({ }) => {
     spaceBetween: 10
   }
 
+  const starsProps = {
+    size: 18,
+    count: 5,
+    color: 'black',
+    activeColor: 'yellow',
+    isHalf: true,
+    edit: false,
+    // emptyIcon: <i className="far fa-star" />,
+    // halfIcon: <i className="fa fa-star-half-alt" />,
+    // filledIcon: <i className="fa fa-star" />,
+  };
+
   return(
     <Fragment>
       { 
@@ -109,10 +131,10 @@ const Showcase = ({ }) => {
               { 
                 [...anime]
                 .sort((a, b) => b.rating - a.rating)
-                .filter(f => f.status == 'Ongoing' && f.rating >= 70)
+                .filter(f => f.status == 'Ongoing') //&& f.rating >= 70
                 .map(anime => (
                   <SwiperSlide key={`slide_${anime.id}`}>
-                    <ShowcaseCard {...anime} />
+                    <ShowcaseCard {...anime} starsProps={starsProps} />
                   </SwiperSlide>)
                 )
               }
@@ -124,7 +146,7 @@ const Showcase = ({ }) => {
               {
                 [...anime]
                 .sort((a, b) => b.rating - a.rating)
-                .filter(f => f.status == 'Ongoing' && f.rating >= 70)
+                .filter(f => f.status == 'Ongoing')
                 .map((anime, aniKey) => (
                   <SwiperSlide key={`slide_${anime.id}`}>
                     <ThumbCard opacity={swiperIndex == aniKey ? 1 : .5} mt={swiperIndex == aniKey ? -10 : 0} {...anime} />

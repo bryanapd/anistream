@@ -41,7 +41,7 @@ export const ItemCard = ({ id, title, image, rating, color, episodeId, episodeTi
           alt={`${title.romaji} image`}
           />
         { !hovered && <Box pos="absolute" h="full" w="full" bgGradient={`linear(to-b, transparent, rgb(10 22 37))`} bottom={0} left={0} /> } 
-        <Tag size="sm" bg="#436bf1" color="white" fontWeight="bold" rounded="0" zIndex="99" mb={2}>
+        <Tag size="sm" bg="primary.500" color="white" fontWeight="bold" rounded="0" zIndex="99" mb={2}>
           { episodeId ? `Ep. ${episodeNumber}` : status }
         </Tag>
         <Heading size="xs" zIndex="99" noOfLines={3}>{title.romaji}</Heading>

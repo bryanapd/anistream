@@ -20,15 +20,16 @@ export const theme = extendTheme({
     },
     primary: {
       '500': '#436bf1',
+      '600': '#2E80EC',
     },
     secondary: {
       '500': '#1C3879'
     }
   },
-  // fonts: {
-  //   heading: 'Urbanist',
-  //   body: 'Urbanist'
-  // },
+  fonts: {
+    heading: 'Montserrat',
+    body: 'Montserrat'
+  },
   styles: {
     global: {
       outline: '0px !important',

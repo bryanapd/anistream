@@ -83,7 +83,8 @@ const Search = ({ title = '', props }) => {
   const selectProps = {
     controlProps: { w: { base: 'auto', md: '200px' } },
     rounded: 'sm',
-    bg: mode('gray.100', 'white')
+    bg: mode('gray.100', 'white'),
+    color: 'black'
   }
 
   return(

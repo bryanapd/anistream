@@ -15,7 +15,8 @@ export const AppHeader = ({ children, boxStyle, ...rest }) => (
       // backdropFilter="blur(8px)"
       borderColor="transparent"
       pos="fixed" 
-      py={2} w="full" zIndex="1000"
+      // bg={useColorModeValue('white', 'secondary.500')}
+      w="full" zIndex="1000" p={1}
       {...boxStyle}>
       <Container maxW="container.xl">
         <HStack {...rest}>
@@ -29,12 +30,12 @@ export const AppHeader = ({ children, boxStyle, ...rest }) => (
 export const AppSpacer = () => <Box h="72px" />
 
 export const AppBrand = ({ logo, title = '', onMenuClick }) => (
-  <HStack w={{ base: 'full', md: 'auto' }} minH="50px">
+  <HStack w={{ base: 'full', md: 'auto' }} minH="50px" overflow="hidden">
     <Link href="/">
       <Box as="a" cursor="pointer" pr={5}>
         {
           logo
-          ? <Img src={logo} boxSize="60px" borderRadius="full" />
+          ? <Img src={logo} boxSize="60px" borderRadius="xl" />
           : <Heading size="md">{title}</Heading>
         }
       </Box>
@@ -54,7 +55,7 @@ export const AppLinks = ({ routes = [], router, direction = 'row', children, btn
   <Stack
     fontWeight="bold"
     direction={direction}
-    spacing={10}
+    spacing={6}
     alignItems="center"
     display={{ base: (direction == 'column' ? 'flex' : 'none'), md: 'flex' }}
     {...rest}>
