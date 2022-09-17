@@ -70,7 +70,7 @@ const AnimeCard = ({ anime, blur, setBlur }) => (
           </Flex>
           <Flex justifyContent="space-between" mb={2}>
             <Text fontSize="xs">AIRED</Text>
-            <Heading size="xs">{`${anime.startDate.month} ${anime.startDate.day} ${anime.startDate.year}`}</Heading>
+            <Heading size="xs">{`${anime.startDate.year}`}</Heading>
           </Flex>
           {/* <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(7rem, 1fr))', gap: '1.5rem' }}>
             {
@@ -118,7 +118,6 @@ const Anime = ({ }) => {
   if(isError){
     console.log(`Error Anime Id: ${isError}`)
   }
-
   return(
     <AppLayout>
       { !details && isLoading && <Spinner size="sm" /> }

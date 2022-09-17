@@ -16,29 +16,11 @@ export const FormSwitch = ({ label, left, right, rightProps, controlProps, tag, 
   </FormControl>
 )
 
-export const FormTags = ({ tags = [], separator = ',' }) => {
-
-  const handleSelect = () => {
-
-  }
-
-  const handleChange = () => {
-
-  }
-
-  return (
-    <Box>
-      { tags.map(tag => <Tag key={`tag-${tag}`}>{tag}</Tag>) }
-      <Inp variant="unstyled" onChange={handleChange} />
-    </Box>
-  )
-}
-
 export const FormInput = ({ label, left, right, rightProps, controlProps, tag, onChange, inputRef, onRightPropsClick, ...rest }) => (
   <FormControl {...controlProps}>
     <FormLabel fontSize="sm" fontWeight="bold">{label} {tag && <Tag size="sm">{tag}</Tag>}</FormLabel>
     <InputGroup>
-      { left && <InputLeftElement children={left} /> }
+      { left && <InputLeftElement>{left}</InputLeftElement> }
       <Input ref={inputRef} onChange={onChange} {...rest} />
       { right && <InputRightElement onClick={onRightPropsClick} {...rightProps}>{right}</InputRightElement> }
     </InputGroup>
@@ -49,7 +31,7 @@ export const FormTextArea = ({ label, left, right, controlProps, tag, ...rest })
   <FormControl {...controlProps}>
     <FormLabel fontSize="lg" fontWeight="bold">{label} {tag && <Tag size="sm">{tag}</Tag>}</FormLabel>
     <InputGroup>
-      { left && <InputLeftElement children={left} /> }
+      { left && <InputLeftElement>{left}</InputLeftElement> }
       <Textarea {...rest} />
       { right && <InputRightElement width="4.5rem">{right}</InputRightElement> }
     </InputGroup>
@@ -60,7 +42,7 @@ export const FormSelect = ({ label, left, right, rightProps, controlProps, optio
   <FormControl {...controlProps}>
     <FormLabel fontSize="sm" fontWeight="bold">{label}</FormLabel>
     <InputGroup>
-      { left && <InputLeftElement children={left} /> }
+      { left && <InputLeftElement>{left}</InputLeftElement> }
       <Select {...rest}>
         <option key="selector" value="" hidden>Any</option>
         { (options || []).map(option => <option key={option.value} value={option.value} disabled={disabled}>{option.label}</option>) }

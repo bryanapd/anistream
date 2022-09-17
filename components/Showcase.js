@@ -28,7 +28,7 @@ const ShowcaseCard = ({ id, title, cover, genres, description, rating, starsProp
           <Stack direction="row" divider={<StackDivider />} spacing={4} mb={4}>
             <ReactStars value={(rating / 100) * 5} {...starsProps}  />
             <HStack>
-              { genres.map((genre, genreKey) => <Tag key={genreKey} bg="primary.500" fontSize="xs" color="white" fontWeight="bold" rounded="sm">{genre}</Tag> ) }
+              { genres.map((genre, genreKey) => <Tag key={genreKey} color="white" size="md" fontSize="xs" bg="primary.600" rounded="full">{genre}</Tag> ) }
             </HStack>
           </Stack>
           <Text fontSize="sm" noOfLines={{ base: 5, md: 5 }} whiteSpace="pre-line" mb={6}>{description && description.replace(/<[^>]*>?/gm, '')}</Text>
