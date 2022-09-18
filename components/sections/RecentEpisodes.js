@@ -12,7 +12,7 @@ import { FreeMode, Autoplay, Lazy, Controller, Thumbs, Grid } from "swiper"
 import { useGetRecentEpisodesQuery } from "../../features/apiSlice";
 
 
-export const ItemCard = ({ id, title, image, rating, color, episodeId, episodeTitle, episodeNumber, genres = [], status, h = '400px' }) => {
+export const ItemCard = ({ id, title, image, rating = 100, color, episodeId, episodeTitle, episodeNumber, genres = [], status, h = '400px' }) => {
   const [hovered, setHovered] = useState(false)
   return(
     <Link href={`/anime/${id}`} passHref>
@@ -44,7 +44,7 @@ export const ItemCard = ({ id, title, image, rating, color, episodeId, episodeTi
         <Tag size="sm" bg="primary.500" color="white" fontWeight="bold" rounded="0" zIndex="99" mb={2}>
           { episodeId ? `Ep. ${episodeNumber}` : status }
         </Tag>
-        <Heading size="xs" zIndex="99" noOfLines={3}>{title.romaji}</Heading>
+        <Heading size="xs" color="white" zIndex="99" noOfLines={2}>{title.romaji}</Heading>
       </Flex>
     </Link>
   )

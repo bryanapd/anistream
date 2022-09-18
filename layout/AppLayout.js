@@ -38,10 +38,10 @@ const AppLayout = ({ children, withFooter }) => {
   let result
   const router = useRouter()
   const ref = useRef(null)
-  const { colorMode, toggleColorMode } = useColorMode()
   const [visible, setVisible] = useState(false)
   const [hideResult, setHideResult] = useState(false)
   const [backdrop, setBackdrop] = useState('0px')
+  const { colorMode, toggleColorMode } = useColorMode()
 
   const dispatch = useDispatch()
   const query = useSelector(state => state.filters.search)
@@ -49,7 +49,7 @@ const AppLayout = ({ children, withFooter }) => {
 
   const routes = [
     {
-      path: '/',
+      path: '/anime/top',
       label: 'Top Anime'
     },
     {
@@ -108,7 +108,6 @@ const AppLayout = ({ children, withFooter }) => {
   }
 
   const backdropHandler = () => {
-    if(router.route)
     window.scrollY > 20 ? setBackdrop('8px') : setBackdrop('0px')
   }
 

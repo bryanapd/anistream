@@ -16,10 +16,10 @@ import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controlle
 import { useGetAnimeDetailsByIdQuery, useGetTrendingAnimeQuery } from "../features/apiSlice";
 
 const ShowcaseCard = ({ id, title, cover, genres, description, rating, starsProps }) => (
-  <Flex flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="60vh" pos="relative" pb={4}>
+  <Flex  color="white" flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="60vh" pos="relative" pb={4}>
     <Img filter="blur(2px)" pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
     <Box layerStyle="showcaseLinearBottom" /> 
-    {/* <Box layerStyle="showcaseLinearTop" />  */}
+    <Box layerStyle="showcaseLinearTop" /> 
     <Box layerStyle="showcaseLinearRight" /> 
     <Container maxW="container.xl" pos='relative' zIndex="999">
       <Grid templateColumns="auto 400px" gap={4}>
@@ -149,7 +149,7 @@ const Showcase = ({ }) => {
                 .filter(f => f.status == 'Ongoing')
                 .map((anime, aniKey) => (
                   <SwiperSlide key={`slide_${anime.id}`}>
-                    <ThumbCard opacity={swiperIndex == aniKey ? 1 : .5} mt={swiperIndex == aniKey ? -10 : 0} {...anime} />
+                    <ThumbCard opacity={swiperIndex == aniKey ? 1 : .8} mt={swiperIndex == aniKey ? -10 : 0} {...anime} />
                   </SwiperSlide>)
                 )
               }
