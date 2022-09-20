@@ -10,12 +10,13 @@ export const apiSlice = createApi({
   }),
   endpoints: builder => ({
     getPopularAnime: builder.query({
-      query: () => ({
-        url: 'meta/anilist/popular',
-        params: {
-          perPage: 50
+      query: query => {
+        const { page, perPage } = query
+        return {
+          url: 'meta/anilist/popular',
+          params: { page, perPage }
         }
-      })
+      }
     }),
     getTrendingAnime: builder.query({
       query: () => ({

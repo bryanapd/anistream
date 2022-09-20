@@ -126,15 +126,15 @@ export const theme = extendTheme({
         primary: {
           bg: 'primary.500',
           rounded: 'sm',
-          iconSpacing: 1
-       },
-       seeMore: {
-        color: 'white',
-        bg: 'primary.500',
-        fontSize: 'xs',
-        rounded: 'sm'
-       }
+          iconSpacing: 1,
+        },
+        seeMore: {
+          color: 'white',
+          bg: 'primary.500',
+          fontSize: 'xs',
+          rounded: 'sm'
+        }
+      }
     }
-  }
   }
 })

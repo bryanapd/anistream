@@ -53,7 +53,7 @@ const AppLayout = ({ children, withFooter }) => {
       label: 'Top Anime'
     },
     {
-      path: '/',
+      path: '/anime/genres',
       label: 'Genres'
     },
     {

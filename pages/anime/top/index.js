@@ -1,27 +1,41 @@
 import { Fragment, useEffect, useState, useCallback } from "react";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import Link from "next/link";
 import { 
   Box, Text, Heading, Button, Container, useColorModeValue as mode,
-  Grid, HStack, IconButton
+  Grid, HStack, IconButton, Center
 } from '@chakra-ui/react'
+import { BsArrowLeft, BsArrowLeftCircle, BsArrowRight } from 'react-icons/bs'
 
 import AppLayout from "../../../layout/AppLayout";
 import { AppSpacer } from '../../../components/Header'
 import { SkeletonItemCard } from '../../../components/SkeletonCard'
 import { ItemCard } from '../../../components/sections/RecentEpisodes'
-import { BsArrowLeftCircle} from 'react-icons/bs'
 
 import { useGetPopularAnimeQuery } from "../../../features/apiSlice";
+import { SectionTitle } from "../../../components/SectionHeader";
 
 
 export default function TopAnime ({ title = 'Top Anime' }){
   let topAnime = []
-  const { data, isLoading, isError } = useGetPopularAnimeQuery()
-
+  const router = useRouter()
+  const [currentPage, setCurrentPage] = useState(1)
+  const { data, isLoading, isError } = useGetPopularAnimeQuery({ page: currentPage, perPage: 20 })
   if(data){
     const { results } = data
     topAnime = results
+  }
+
+  useEffect(() => {
+    router.push({ pathname: '/anime/top', query: { page: currentPage }}, undefined, { shallow: true })
+  }, [currentPage])
+
+  const handlePrev = () => {
+    setCurrentPage(prev => prev - 1)
+  }
+
+  const handleNext = () => {
+    setCurrentPage(prev => prev + 1)
   }
 
   return(
@@ -29,16 +43,19 @@ export default function TopAnime ({ title = 'Top Anime' }){
       <AppSpacer />
       <AppSpacer />
       <Container maxW="container.xl">
-        <HStack mb={6} spacing={4}>
-          <Link href="/"> 
-            <IconButton size="lg" variant="ghost" icon={<BsArrowLeftCircle size={40} />} />  
-          </Link>
-          <Heading size="md">{title}</Heading>
-        </HStack>
+        <SectionTitle title={title} />
         <Grid templateColumns="repeat(auto-fit, minmax(14rem, 1fr))" gap={4}>
           { !data && isLoading && Array.from({ length: 10 }).map((item, itemKey) => <SkeletonItemCard key={itemKey} /> ) }
           { topAnime && topAnime.map(anime => <ItemCard key={anime.id} {...anime} /> ) }
         </Grid>
+        {
+          data && (
+            <Center mt={10}>
+              <Button variant="ghost" size="sm" leftIcon={<BsArrowLeft />} disabled={currentPage == 1 ? true : false} onClick={handlePrev} mr={2}>Previous</Button>
+              <Button variant="ghost" size="sm" rightIcon={<BsArrowRight />} disabled={data.hasNextPage == false ? true : false} onClick={handleNext}>Next</Button>
+            </Center>
+          )
+        }
       </Container>
     </AppLayout>
   )

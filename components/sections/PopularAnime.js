@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Router, { useRouter } from "next/router";
 
 import { 
@@ -16,7 +16,7 @@ import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controlle
 
 const PopularAnime = ({ title = 'All Time Popular Anime', boxStyle }) => {
   var episodes
-  const { data, isLoading, isError } = useGetPopularAnimeQuery()
+  const { data, isLoading, isError } = useGetPopularAnimeQuery({ page: 1, perPage: 50 })
 
   if(data){
     const { results } = data
@@ -42,7 +42,6 @@ const PopularAnime = ({ title = 'All Time Popular Anime', boxStyle }) => {
     },
     spaceBetween: 10
   }
-
   return(
     <Box {...boxStyle}>
       { !episodes && isLoading && <Spinner /> }
