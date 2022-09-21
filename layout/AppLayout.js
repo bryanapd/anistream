@@ -1,20 +1,22 @@
 import Head from "next/head"
 import styles from '../styles/Layout.module.css'
 import { Fragment, useState, useEffect, useRef } from "react"
-import { useRouter } from "next/router"
+import Router, { useRouter } from "next/router"
 import Link from "next/link"
 import { 
   Box, Button, Container, Flex, Heading, HStack, IconButton, Img, 
   Input, Spacer, Spinner, Text, useColorMode, useColorModeValue as mode
 } from "@chakra-ui/react"
 import { IoChevronDown, IoChevronUp, IoMoonOutline, IoSearch, IoSunnyOutline } from "react-icons/io5"
+import { BsChevronDown } from "react-icons/bs"
 
 import { AppBrand, AppHeader, AppLinks, AppSpacer } from "../components/Header"
 
 import useDebounce from "../hooks/useDebounce"
 import { useGetAnimeSearchQuery } from "../features/apiSlice"
-import { setSearchValue } from "../features/filterSlice"
+import { setSearchValue, setSelectedGenre } from "../features/filterSlice"
 import { useDispatch, useSelector } from "react-redux"
+import filters from '../lib/filters'
 
 
 const QueryCard = ({ id, image, title, status, type, rating, totalEpisodes, releaseDate, color = '#ffff' }) => (
@@ -57,11 +59,11 @@ const AppLayout = ({ children, withFooter }) => {
       label: 'Genres'
     },
     {
-      path: '/',
+      path: '/types',
       label: 'Types'
     },
     {
-      path: '/',
+      path: '/my',
       label: 'My List'
     },
 
@@ -126,8 +128,14 @@ const AppLayout = ({ children, withFooter }) => {
       </Head>
       <AppHeader boxStyle={{ backdropFilter: `blur(${backdrop}) saturate(180%)` }}>
         <AppBrand logo="../../../icon.png" />
-        {/* <Spacer /> */}
-        <AppLinks router={router} routes={routes} />
+        <AppLinks 
+          router={router} 
+          routes={routes} 
+          options={filters.genres} 
+          btnProps={{ _hover: { color: 'primary.500' }}} 
+          menuProps={{ bg: mode('white', 'gray.900'), borderWidth: 0, borderRadius: 0 }} 
+          menuBtnProps={{ rightIcon: <BsChevronDown size={12} style={{ marginTop: 2 }} />, iconSpacing: 1.5, _hover: { color: 'primary.500' } }}
+          />
         <Spacer />
         {
           visible && (

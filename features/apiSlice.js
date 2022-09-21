@@ -71,6 +71,15 @@ export const apiSlice = createApi({
           provider: 'zoro'
         }
       })
+    }),
+    getAnimeByGenre: builder.query({
+      query: slug => ({
+        url: `meta/anilist/genre?genres=["${slug}"]`,
+        method: 'GET',
+        // params: {
+        //   genres: slug
+        // }
+      })
     })
   })
 })
@@ -83,5 +92,6 @@ export const {
   useGetAnimeAdvacedSearchQuery,
   useGetRecentEpisodesQuery,
   useGetAnimeDetailsByIdQuery,
-  useGetAnimeEpisodeByIdQuery
+  useGetAnimeEpisodeByIdQuery,
+  useGetAnimeByGenreQuery
 } = apiSlice

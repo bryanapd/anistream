@@ -4,6 +4,7 @@ const filterSlice = createSlice({
   name: 'filters',
   initialState: {
     search: null,
+    genre: null,
     genres: [],
     year: null,
     season: null,
@@ -25,6 +26,9 @@ const filterSlice = createSlice({
     setFormat: (state, action) => {
       state.format = action.payload
     },
+    setGenre: (state, action) => {
+      state.genre = action.payload
+    },
     setSelectedGenre: (state, action) => {
       state.genres.push(action.payload)
     },
@@ -37,6 +41,6 @@ const filterSlice = createSlice({
   }
 })
 
-export const { setSearchValue, setYear, setSeason, setFormat, setSelectedGenre, removeSelectedGenre, removeSearchQuery } = filterSlice.actions
+export const { setSearchValue, setYear, setSeason, setFormat, setGenre, setSelectedGenre, removeSelectedGenre, removeSearchQuery } = filterSlice.actions
 
 export default filterSlice.reducer

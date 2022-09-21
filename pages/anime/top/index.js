@@ -13,7 +13,7 @@ import { SkeletonItemCard } from '../../../components/SkeletonCard'
 import { ItemCard } from '../../../components/sections/RecentEpisodes'
 
 import { useGetPopularAnimeQuery } from "../../../features/apiSlice";
-import { SectionTitle } from "../../../components/SectionHeader";
+import { PageSectionHeader } from "../../../components/PageHeader";
 
 
 export default function TopAnime ({ title = 'Top Anime' }){
@@ -43,7 +43,7 @@ export default function TopAnime ({ title = 'Top Anime' }){
       <AppSpacer />
       <AppSpacer />
       <Container maxW="container.xl">
-        <SectionTitle title={title} />
+        <PageSectionHeader title={title} />
         <Grid templateColumns="repeat(auto-fit, minmax(14rem, 1fr))" gap={4}>
           { !data && isLoading && Array.from({ length: 10 }).map((item, itemKey) => <SkeletonItemCard key={itemKey} /> ) }
           { topAnime && topAnime.map(anime => <ItemCard key={anime.id} {...anime} /> ) }

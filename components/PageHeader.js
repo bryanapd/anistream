@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { BsArrowLeftCircle } from "react-icons/bs";
 
-export const SectionTitle = ({ title = 'Section Title', icon, href = '/', ...rest }) => (
+export const PageSectionHeader = ({ title = 'Section Title', icon, href = '/', ...rest }) => (
   <HStack mb={6} spacing={4} {...rest}>
     <Link href={href}> 
       <IconButton size="xl" variant="ghost" icon={<BsArrowLeftCircle size={50} />} />  

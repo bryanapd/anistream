@@ -10,7 +10,7 @@ import {
 
 import AppLayout from "../../../layout/AppLayout";
 import { AppSpacer } from "../../../components/Header";
-import { SectionTitle } from "../../../components/SectionHeader";
+import { PageSectionHeader } from "../../../components/PageHeader";
 
 import filters from '../../../lib/filters'
 
@@ -21,7 +21,7 @@ export default function Genres({ title = 'Genres', items = [] }) {
       <AppSpacer />
       <AppSpacer />
       <Container maxW="container.xl">
-        <SectionTitle title="Genres" href="/" />
+        <PageSectionHeader title="Genres" href="/" />
         <Grid templateColumns="repeat(auto-fit, minmax(5rem, 1rem))" gap={4}>
           { 
             filters && filters.genres.map(genre => 
