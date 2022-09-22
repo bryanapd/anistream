@@ -9,7 +9,8 @@ import {
 import { IoMenu } from 'react-icons/io5'
 import { BsArrowBarDown, BsArrowDown, BsArrowLeft, BsChevronDown } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
-import { setGenre } from '../features/filterSlice'
+import { setFormat, setGenre } from '../features/filterSlice'
+import { GenreMenu } from './Menu'
 
 export const AppHeader = ({ children, boxStyle, ...rest }) => (
   <Box>
@@ -55,14 +56,19 @@ export const AppBrand = ({ logo, title = '', onMenuClick }) => (
   </HStack>
 )
 
-export const AppLinks = ({ routes = [], router, direction = 'row', children, options = [], btnProps, menuProps, menuBtnProps, menuItemProps, onMenuItemClick, ...rest }) => {
+export const AppLinks = ({ routes = [], router, direction = 'row', children, genreOptions = [], formatOptions = [], btnProps, menuProps, menuBtnProps, menuItemProps, ...rest }) => {
   const { isOpen, onOpen, onClose } = useDisclosure() 
+  const { isOpen: isTypesOpen, onOpen: onTypesOpen, onClose: onTypesClose } = useDisclosure()
   const dispatch = useDispatch()
-  const selectedGenre = useSelector(state => state.filters.genres)
 
   const genreHandler = genre => {
     router.push({ pathname: `/anime/genres/${(genre).toLowerCase()}` })
     dispatch(setGenre(genre))
+  }
+
+  const formatHandler = format => {
+    router.push({ pathname: `/anime/format/${(format).toLowerCase()}` })
+    dispatch(setFormat(format))
   }
 
   return(
@@ -82,22 +88,25 @@ export const AppLinks = ({ routes = [], router, direction = 'row', children, opt
             {
               route.path == '/anime/genres' ? 
               <Menu isOpen={isOpen}>
-                <MenuButton as={Button} variant="link" color={router.route == route.path ? 'primary.500' : ''} onMouseEnter={onOpen} onMouseLeave={onClose} {...btnProps} {...menuBtnProps}>
+                <MenuButton as={Button} variant="link" color={router.route.includes(route.path) ? 'primary.500' : ''} onMouseEnter={onOpen} onMouseLeave={onClose} {...btnProps} {...menuBtnProps}>
                   {route.label}
                 </MenuButton>
                 <MenuList onMouseEnter={onOpen} onMouseLeave={onClose} {...menuProps}>
-                  { options.map(option => <MenuItem key={option.value} onClick={() => genreHandler(option.value)} {...menuItemProps}>{option.label}</MenuItem> )}
+                  { genreOptions.map(option => <MenuItem key={option.value} onClick={() => genreHandler(option.value)} {...menuItemProps}>{option.label}</MenuItem> )}
                 </MenuList>
               </Menu>
               :
-              <Button 
-                size="md" 
-                variant="link" 
-                color={router.route == route.path ? 'primary.500' : ''}
-                {...route.btnProps} 
-                {...btnProps}>
-                {route.label}
-              </Button>
+              route.path == '/anime/format' ? 
+              <Menu isOpen={isTypesOpen}>
+                <MenuButton as={Button} variant="link" color={router.route.includes(route.path) ? 'primary.500' : ''} onMouseEnter={onTypesOpen} onMouseLeave={onTypesClose} {...btnProps} {...menuBtnProps}>
+                  {route.label}
+                </MenuButton>
+                <MenuList onMouseEnter={onTypesOpen} onMouseLeave={onTypesClose} {...menuProps}>
+                  { formatOptions.map(option => <MenuItem key={option.value} onClick={() => formatHandler(option.value)} {...menuItemProps}>{option.label}</MenuItem> )}
+                </MenuList>
+              </Menu>
+              :
+              <Button size="md" variant="link" color={router.route == route.path ? 'primary.500' : ''} {...btnProps}>{route.label}</Button>
             }
           </Link>
         )
@@ -106,3 +115,12 @@ export const AppLinks = ({ routes = [], router, direction = 'row', children, opt
     </Stack>
   )
 }
+
+{/* <GenreMenu 
+  options={options} 
+  route={route} 
+  btnProps={btnProps}
+  menuProps={menuProps} 
+  menuItemProps={menuItemProps} 
+  menuBtnProps={{ color: router.route.includes(route.path) ? 'primary.500' : '' }}
+  /> */}

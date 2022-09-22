@@ -38,7 +38,7 @@ export const apiSlice = createApi({
         }
       }
     }),
-    getAnimeAdvacedSearch: builder.query({
+    getAnimeAdvancedSearch: builder.query({
       query: advancedQuery => {
         const { query, page, perPage, season, format, sort, genres, id, year, status } = advancedQuery
         return{
@@ -89,7 +89,7 @@ export const {
   useGetTrendingAnimeQuery,
   useGetAnimeGenreQuery,
   useGetAnimeSearchQuery,
-  useGetAnimeAdvacedSearchQuery,
+  useGetAnimeAdvancedSearchQuery,
   useGetRecentEpisodesQuery,
   useGetAnimeDetailsByIdQuery,
   useGetAnimeEpisodeByIdQuery,

@@ -13,7 +13,7 @@ import { FormInput, FormSelect } from "../components/Form";
 import { ItemCard } from "../components/sections/RecentEpisodes";
 import { SkeletonItemCard } from "../components/SkeletonCard";
 
-import { useGetAnimeAdvacedSearchQuery, useGetAnimeSearchQuery } from "../features/apiSlice";
+import { useGetAnimeAdvancedSearchQuery, useGetAnimeSearchQuery } from "../features/apiSlice";
 import { setSearchValue, setYear, setFormat, setSeason, setSelectedGenre, removeSelectedGenre, removeSearchQuery } from "../features/filterSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -35,7 +35,7 @@ const Search = ({ title = '', props }) => {
   console.log(filters, 'filters')
   console.log("selected genres from store", genres)
 
-  const { data, isLoading, isFetching, isError } = useGetAnimeAdvacedSearchQuery({ 
+  const { data, isLoading, isFetching, isError } = useGetAnimeAdvancedSearchQuery({ 
     query: anime ? anime : undefined,
     genres: genres.length > 0 ? genres.map(genre => `"${genre.value}"`) : undefined,
     page: 1, 

@@ -13,6 +13,7 @@ import { BsChevronDown } from "react-icons/bs"
 import { AppBrand, AppHeader, AppLinks, AppSpacer } from "../components/Header"
 
 import useDebounce from "../hooks/useDebounce"
+import { capitalizeFirstLetter } from '../lib/capitalizeFirstLetter'
 import { useGetAnimeSearchQuery } from "../features/apiSlice"
 import { setSearchValue, setSelectedGenre } from "../features/filterSlice"
 import { useDispatch, useSelector } from "react-redux"
@@ -59,8 +60,8 @@ const AppLayout = ({ children, withFooter }) => {
       label: 'Genres'
     },
     {
-      path: '/types',
-      label: 'Types'
+      path: '/anime/format',
+      label: 'Formats'
     },
     {
       path: '/my',
@@ -131,9 +132,23 @@ const AppLayout = ({ children, withFooter }) => {
         <AppLinks 
           router={router} 
           routes={routes} 
-          options={filters.genres} 
+          genreOptions={filters.genres}
+          formatOptions={filters.formats}
           btnProps={{ _hover: { color: 'primary.500' }}} 
-          menuProps={{ bg: mode('white', 'gray.900'), borderWidth: 0, borderRadius: 0 }} 
+          // w="300px"
+          //           flexDir="column" 
+          //           pos="absolute"
+          //           overflow="hidden" zIndex="99" 
+          //           border="1px solid rgba(255, 255, 255, 0.125)" 
+          //           bgColor="rgba(17, 25, 40, 0.75)" 
+          //           backdropFilter="blur(16px) saturate(180%)"
+          //           sx={{
+          //             '&::-webkit-backdrop-filter': {
+          //               backdropFilter: 'blur(16px) saturate(180%)'
+          //             }
+          //           }}
+          menuProps={{ border: '1px solid rgba(255, 255, 255, 0.125)', bgColor: 'rgba(0, 0, 0, 0.95)', backdropFilter: 'blur(16px) saturate(180%)' }} 
+          menuItemProps={{ fontSize: 14, fontWeight: 'medium' }}
           menuBtnProps={{ rightIcon: <BsChevronDown size={12} style={{ marginTop: 2 }} />, iconSpacing: 1.5, _hover: { color: 'primary.500' } }}
           />
         <Spacer />
