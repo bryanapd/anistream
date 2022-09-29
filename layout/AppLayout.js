@@ -119,6 +119,7 @@ const AppLayout = ({ children, withFooter }) => {
   }, [])
 
   useOutsideAlerter(ref)
+
   return(
     <Fragment>
       <Head>
@@ -135,18 +136,6 @@ const AppLayout = ({ children, withFooter }) => {
           genreOptions={filters.genres}
           formatOptions={filters.formats}
           btnProps={{ _hover: { color: 'primary.500' }}} 
-          // w="300px"
-          //           flexDir="column" 
-          //           pos="absolute"
-          //           overflow="hidden" zIndex="99" 
-          //           border="1px solid rgba(255, 255, 255, 0.125)" 
-          //           bgColor="rgba(17, 25, 40, 0.75)" 
-          //           backdropFilter="blur(16px) saturate(180%)"
-          //           sx={{
-          //             '&::-webkit-backdrop-filter': {
-          //               backdropFilter: 'blur(16px) saturate(180%)'
-          //             }
-          //           }}
           menuProps={{ border: '1px solid rgba(255, 255, 255, 0.125)', bgColor: 'rgba(0, 0, 0, 0.95)', backdropFilter: 'blur(16px) saturate(180%)' }} 
           menuItemProps={{ fontSize: 14, fontWeight: 'medium' }}
           menuBtnProps={{ rightIcon: <BsChevronDown size={12} style={{ marginTop: 2 }} />, iconSpacing: 1.5, _hover: { color: 'primary.500' } }}

@@ -10,22 +10,43 @@ import {
   MenuCommand,
   MenuGroup,
   Icon,
-  useDisclosure
+  useDisclosure,
+  useColorModeValue as mode
 } from '@chakra-ui/react'
 
 import Router from 'next/router'
+import { setWatching } from '../features/listsSlice'
 import { setGenre } from '../features/filterSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 
-export const AddToList = ({ options = [], label = 'Add to List', icon }) => (
-  <Menu placement="right">
-    <MenuButton as={Button} w="max" size="lg" variant="ghost" leftIcon={<Icon as={icon} fontSize="35px" />} iconSpacing={1} p={0}>{label}</MenuButton>
-    <MenuList>
-     { (options || []).map((option, optKey) => <MenuItem key={optKey}>{option}</MenuItem>)}
-    </MenuList>
-  </Menu>
-)
+export const AddToList = ({ options = [], label = 'Add to List', icon, onClick }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  return(
+    <Menu isOpen={isOpen} placement="right">
+      <MenuButton 
+        as={Button} 
+        w="max" size="lg" 
+        variant="ghost" 
+        leftIcon={<Icon as={icon} fontSize="35px" />} 
+        iconSpacing={1} p={0} 
+        transition="all 300ms ease"
+        onMouseEnter={onOpen} 
+        onMouseLeave={onClose}
+        _hover={{ 
+          transform: 'scale(1.1)'
+        }}
+        _active={{
+          bg: 0
+        }}>
+          {label}
+      </MenuButton>
+      <MenuList color={mode('black', 'white')} bg={mode('white', 'gray.900')} borderWidth={0} onMouseEnter={onOpen} onMouseLeave={onClose}>
+      { (options || []).map(option => <MenuItem key={option.value} onClick={onClick}>{option.label}</MenuItem> )}
+      </MenuList>
+    </Menu>
+  )
+}
 
 export const GenreMenu = ({ router, route, options = [], menuProps, btnProps, menuBtnProps, menuItemProps }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()

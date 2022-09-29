@@ -15,7 +15,7 @@ import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controlle
 
 import { useGetAnimeDetailsByIdQuery, useGetTrendingAnimeQuery } from "../features/apiSlice";
 
-const ShowcaseCard = ({ id, title, cover, genres, description, rating, starsProps }) => (
+const ShowcaseCard = ({ id, title, cover, genres, description, rating, starsProps, options = [] }) => (
   <Flex  color="white" flexDir="column" alignItems="start" justifyContent="flex-end" w="full" minH="50vh" h="60vh" pos="relative" pb={4}>
     <Img filter="blur(2px)" pos="absolute" h="full" w="full" top={0} left={0} objectFit="cover" objectPosition="center" alt={`${title.romaji} cover`} src={cover} />
     <Box layerStyle="showcaseLinearBottom" /> 
@@ -28,16 +28,17 @@ const ShowcaseCard = ({ id, title, cover, genres, description, rating, starsProp
           <Stack direction="row" divider={<StackDivider />} spacing={4} mb={4}>
             <ReactStars value={(rating / 100) * 5} {...starsProps}  />
             <HStack>
-              { genres.map((genre, genreKey) => <Tag key={genreKey} color="white" size="md" fontSize="xs" bg="primary.600" rounded="full">{genre}</Tag> ) }
+              { genres.map((genre, genreKey) => <Tag key={genreKey} size="lg" fontSize="xs" color="white" bg="blackAlpha.600" rounded="full">{genre}</Tag> ) }
             </HStack>
           </Stack>
           <Text fontSize="sm" noOfLines={{ base: 5, md: 5 }} whiteSpace="pre-line" mb={6}>{description && description.replace(/<[^>]*>?/gm, '')}</Text>
           <HStack spacing={5}>
             <Link href={`/anime/${id}`}>
-              <Button w="max" size="lg" variant="ghost" leftIcon={<BsPlayCircle size="40px" />} iconSpacing={2} p={0}>Play</Button>
+              <Button w="max" size="lg" variant="ghost" leftIcon={<BsPlayCircle size="40px" />} iconSpacing={2} p={0} transition="all 300ms ease" _hover={{ transform: 'scale(1.1)'}}>
+                Play
+              </Button>
             </Link>
-            {/* <Button w="max" size="lg" variant="ghost" leftIcon={<BsPlus size="40px" />} iconSpacing={0} p={0}>Add to List</Button> */}
-            <AddToList icon={BsPlus} />
+            <AddToList options={options} icon={BsPlus} />
           </HStack>
         </Flex>
       </Grid>
@@ -87,7 +88,7 @@ const Showcase = ({ }) => {
     effect: 'fade',
     autoplay: {
       delay: 3500,
-      disableOnInteraction: false
+      disableOnInteraction: true
     },
     freeMode: true,
     modules: [EffectFade, Navigation, FreeMode, Autoplay, Lazy, Controller, Thumbs ],
@@ -120,6 +121,37 @@ const Showcase = ({ }) => {
     // filledIcon: <i className="fa fa-star" />,
   };
 
+  const lists = [
+    {
+      label: 'All',
+      value: 0
+    },
+    {
+      label: 'Watching',
+      value: 1
+    },
+    {
+      label: 'Rewatching',
+      value: 2
+    },
+    {
+      label: 'Completed',
+      value: 3
+    },
+    {
+      label: 'Paused',
+      value: 4
+    },
+    {
+      label: 'Planning',
+      value: 5
+    },
+    {
+      label: 'Dropped',
+      value: 6
+    },
+  ]
+
   return(
     <Fragment>
       { 
@@ -134,7 +166,7 @@ const Showcase = ({ }) => {
                 .filter(f => f.status == 'Ongoing') //&& f.rating >= 70
                 .map(anime => (
                   <SwiperSlide key={`slide_${anime.id}`}>
-                    <ShowcaseCard {...anime} starsProps={starsProps} />
+                    <ShowcaseCard {...anime} starsProps={starsProps} options={lists} />
                   </SwiperSlide>)
                 )
               }
