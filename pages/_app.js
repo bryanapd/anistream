@@ -1,5 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import { Provider } from 'react-redux'
+import { Toaster } from 'react-hot-toast';
 import { theme } from '../theme'
 import store from '../app/store'
 
@@ -9,14 +10,6 @@ import '../styles/globals.css'
 import '@vime/core/themes/default.css';
 // // Optional light theme (extends default). ~400B
 import '@vime/core/themes/light.css';
-
-//Splide Default theme
-import '@splidejs/react-splide/css';
-// or other themes
-import '@splidejs/react-splide/css/skyblue';
-import '@splidejs/react-splide/css/sea-green';
-// or only core styles
-import '@splidejs/react-splide/css/core';
 
 // Import Swiper styles
 import "swiper/css";
@@ -29,6 +22,7 @@ function MyApp({ Component, pageProps }) {
   return (
    <Provider store={store}>
     <ChakraProvider theme={theme}>
+      <Toaster />
       <Component {...pageProps} />
     </ChakraProvider>
    </Provider>

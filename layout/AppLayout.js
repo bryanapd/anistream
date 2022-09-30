@@ -64,7 +64,7 @@ const AppLayout = ({ children, withFooter }) => {
       label: 'Formats'
     },
     {
-      path: '/my',
+      path: '/my/list',
       label: 'My List'
     },
 
