@@ -162,7 +162,7 @@ const Showcase = ({ }) => {
                     <ShowcaseCard 
                       starsProps={starsProps} 
                       onClick={() => { addToFavorites(anime); notify({ title: anime.title.romaji }) }} 
-                      // filled={favorites.filter(f => f.id == anime.id) ? true : false}
+                      filled={favorites.find(f => f.id == anime.id) ? true : false}
                       {...anime} 
                       />
                   </SwiperSlide>)

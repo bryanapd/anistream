@@ -4,7 +4,7 @@ import queryString from 'query-string'
 export const apiSlice = createApi({
   reducerPath: 'apiSlice',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://consumet-api.herokuapp.com/', 
+    baseUrl: 'https://api.consumet.org/', 
     paramsSerializer: (params) => 
       queryString.stringify(params, { arrayFormat: 'comma',  })
   }),

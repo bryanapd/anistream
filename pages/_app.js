@@ -1,8 +1,9 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react';
 import { Toaster } from 'react-hot-toast';
 import { theme } from '../theme'
-import store from '../app/store'
+import store, { persistor } from '../app/store'
 
 import '../styles/globals.css'
 
@@ -21,10 +22,12 @@ import "swiper/css/bundle";
 function MyApp({ Component, pageProps }) {
   return (
    <Provider store={store}>
-    <ChakraProvider theme={theme}>
-      <Toaster />
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <PersistGate loading={null} persistor={persistor}> {/* Spinner for loading */}
+      <ChakraProvider theme={theme}>
+        <Toaster />
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </PersistGate>
    </Provider>
   )
 }
