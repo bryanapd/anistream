@@ -14,7 +14,20 @@ export const listsSlice = createSlice({
   },
   reducers: {
     setFavorite: (state, action) => {
+      const exist = state.favorites.find(anime => anime.id == action.payload.id)
+      if(exist) {
+        return {
+        ...state,
+        favorites: state.favorites.filter(anime => anime.id !== action.payload.id)
+        }
+      }
       state.favorites.push(action.payload)
+    },
+    removeFavorite: (state, action) => {
+      return {
+        ...state,
+        favorites: state.favorites.filter(anime => anime.id !== action.payload.id)
+      }
     },
     setWatching: (state, action) => {
       state.watching.push(action.payload)

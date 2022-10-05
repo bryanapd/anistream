@@ -138,11 +138,19 @@ const Showcase = ({ }) => {
     dispatch(setFavorite(anime))
   }
 
-  const notify = ({ title = 'Successfully' }) => {
-    toast(`${title} added to favorites!`, {
-      duration: 1500,
-      icon: '👏'
-    })
+  const notify = ({ id, title = 'Successfully' }) => {
+    const exist = favorites.find(f => f.id === id)
+    if(exist){
+      toast(`${title} remove from favorites!`, {
+        duration: 1500,
+        icon: '💔'
+      })
+    } else {
+      toast(`${title} added to favorites!`, {
+        duration: 1500,
+        icon: '👏'
+      })
+    }
   }
 
   return(
@@ -161,7 +169,7 @@ const Showcase = ({ }) => {
                   <SwiperSlide key={`slide_${anime.id}`}>
                     <ShowcaseCard 
                       starsProps={starsProps} 
-                      onClick={() => { addToFavorites(anime); notify({ title: anime.title.romaji }) }} 
+                      onClick={() => { addToFavorites(anime); notify({ id: anime.id, title: anime.title.romaji }) }} 
                       filled={favorites.find(f => f.id == anime.id) ? true : false}
                       {...anime} 
                       />
