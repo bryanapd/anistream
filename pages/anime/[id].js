@@ -1,16 +1,15 @@
-import Head from 'next/head'
 import { useState } from 'react'
-import Router, { useRouter } from 'next/router'
-
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { 
   Box, Button, Container, Divider, Flex, Grid, Heading, 
-  HStack, Img, Spacer, Spinner, Stack, Switch, Tag, Text, VStack 
+  HStack, Img, Spacer, Spinner, Stack, Switch, Tag, Text, 
 } from '@chakra-ui/react'
 
 import AppLayout from '../../layout/AppLayout'
 import { AppSpacer } from '../../components/Header'
 
-import { useGetAnimeDetailsByIdQuery, useGetAnimeEpisodeByIdQuery} from '../../features/apiSlice'
+import { useGetAnimeDetailsByIdQuery } from '../../features/api/apiSlice'
 
 import { Splide, SplideSlide  } from '@splidejs/react-splide'
 
@@ -18,16 +17,16 @@ import { Splide, SplideSlide  } from '@splidejs/react-splide'
 
 const EpisodeCard = ({ id, image, title, number, blur }) => (
   <Box>
-    <Img 
-      h="23vh" w="full"
-      objectFit="cover"  
-      src={image} 
-      alt={`${title} cover`} 
-      filter={ blur ? 'blur(4px)' : ''} 
-      onClick={() => Router.push(`/anime/episode/${id}`)}
-      mb={2}
-      cursor="pointer" 
-      />
+    <Link href={`/anime/episode/${id}`} passHref>
+      <Img 
+        h="23vh" w="full"
+        objectFit="cover"  
+        src={image} alt={`${title} cover`} 
+        filter={ blur ? 'blur(4px)' : ''} 
+        mb={2}
+        cursor="pointer" 
+        />
+    </Link>
     <Flex alignItems="flex-start" justifyContent="space-between">
       <Heading minW="3rem" size="xs" mr={4}>{`Ep. ${number}`}</Heading>
       <Heading size="xs" fontWeight="medium">{title}</Heading>

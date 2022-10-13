@@ -1,24 +1,23 @@
 import { Fragment, useState, useEffect } from "react";
 import Link from "next/link";
 import { 
-  Box, Heading, Text, Button, useColorModeValue as mode, Container, Spinner, 
-  HStack, Icon, Flex, Grid, 
+  Box, Heading, Button, useColorModeValue as mode, Container, HStack, Icon, Grid, Spinner
 } from "@chakra-ui/react";
-import Select from 'react-select'
 import { IoCloseSharp, IoPricetags } from "react-icons/io5";
+import Select from 'react-select'
 
-import AppLayout from "../layout/AppLayout";
+import AppLayout from "../layout/AppLayout";  
 import { AppSpacer } from "../components/Header";
 import { FormInput, FormSelect } from "../components/Form";
 import { ItemCard } from "../components/sections/RecentEpisodes";
 import { SkeletonItemCard } from "../components/SkeletonCard";
 
-import { useGetAnimeAdvancedSearchQuery, useGetAnimeSearchQuery } from "../features/apiSlice";
-import { setSearchValue, setYear, setFormat, setSeason, setSelectedGenre, removeSelectedGenre, removeSearchQuery } from "../features/filterSlice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import useDebounce from "../hooks/useDebounce";
 import filtersValue from '../lib/filters'
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setSearchValue, setYear, setFormat, setSeason, setSelectedGenre, removeSelectedGenre, removeSearchQuery } from "../features/slices/filterSlice";
+import { useGetAnimeAdvancedSearchQuery } from "../features/api/apiSlice";
 
 
 const Search = ({ title = '', props }) => {
@@ -31,9 +30,6 @@ const Search = ({ title = '', props }) => {
   const season = useSelector(state => state.filters.season)
   const year = useSelector(state => state.filters.year)
   const format = useSelector(state => state.filters.format)
-
-  console.log(filters, 'filters')
-  console.log("selected genres from store", genres)
 
   const { data, isLoading, isFetching, isError } = useGetAnimeAdvancedSearchQuery({ 
     query: anime ? anime : undefined,

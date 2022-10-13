@@ -28,7 +28,7 @@ export default function TopAnime ({ title = 'Top Anime' }){
 
   useEffect(() => {
     router.push({ pathname: '/anime/top', query: { page: currentPage }}, undefined, { shallow: true })
-  }, [currentPage])
+  }, [router, currentPage])
 
   const handlePrev = () => {
     setCurrentPage(prev => prev - 1)

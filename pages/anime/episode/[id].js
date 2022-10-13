@@ -1,20 +1,16 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Fragment, useState } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { useGetAnimeEpisodeByIdQuery } from "../../../features/apiSlice";
-import { useState, useEffect } from "react";
-
-import AppLayout from "../../../layout/AppLayout";
-import { AppSpacer } from "../../../components/Header";
 import { Player, Hls, DefaultUi, DefaultControls } from "@vime/react";
+import { useGetAnimeEpisodeByIdQuery } from "../../../features/api/apiSlice";
 
 
 const Episode = ({ }) => {
   const router = useRouter()
-  const { data: episode, isLoading, isError } = useGetAnimeEpisodeByIdQuery(router.query.id, { skip: !router.query.id })
+  const { data: episode, isLoading } = useGetAnimeEpisodeByIdQuery(router.query.id, { skip: !router.query.id })
 
   var source 
   var subtitle
-
 
   if(episode && subtitle == null) {
     episode.subtitles
@@ -33,7 +29,7 @@ const Episode = ({ }) => {
   }
 
   return(
-    <Box>
+    <div>
       {
         episode && (
           <Player theme="dark">
@@ -52,7 +48,7 @@ const Episode = ({ }) => {
           </Player>
         )
       }
-    </Box>
+    </div>
   )
 }
 export default Episode
