@@ -1,13 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { HYDRATE } from "next-redux-wrapper";
 import queryString from 'query-string'
 
-export const apiSlice = createApi({
+const apiSlice = createApi({
   reducerPath: 'apiSlice',
   baseQuery: fetchBaseQuery({ 
     baseUrl: 'https://api.consumet.org/', 
     paramsSerializer: (params) => 
       queryString.stringify(params, { arrayFormat: 'comma',  })
   }),
+  extractRehydrationInfo(action, { reducerPath }) {
+    if (action.type === HYDRATE) {
+      return action.payload[reducerPath];
+    }
+  },
+  tagTypes: [],
   endpoints: builder => ({
     getPopularAnime: builder.query({
       query: query => {
@@ -93,5 +100,7 @@ export const {
   useGetRecentEpisodesQuery,
   useGetAnimeDetailsByIdQuery,
   useGetAnimeEpisodeByIdQuery,
-  useGetAnimeByGenreQuery
+  useGetAnimeByGenreQuery,
+  util: { getRunningOperationPromises }
 } = apiSlice
+export default apiSlice;

@@ -28,7 +28,7 @@ export const listsSlice = createSlice({
         ...state,
         favorites: state.favorites.filter(anime => anime.id !== action.payload.id)
       }
-    },
+    }, 
     setWatching: (state, action) => {
       state.watching.push(action.payload)
     },

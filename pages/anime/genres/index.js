@@ -1,11 +1,6 @@
 import { Fragment, useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-
-import {
-  Box, Text, Heading, Button, Container, Flex, HStack, useColorModeValue as mode,
-  Grid,
-  Tag
+import { 
+  Box, Heading, Container, useColorModeValue as mode, Grid, Tag 
 } from '@chakra-ui/react'
 
 import AppLayout from "../../../layout/AppLayout";
@@ -15,7 +10,8 @@ import { PageSectionHeader } from "../../../components/PageHeader";
 import filters from '../../../lib/filters'
 
 
-export default function Genres({ title = 'Genres', items = [] }) {
+export default function Genres(props) {
+  const { title = 'title?', items = [] } = props
   return(
     <AppLayout>
       <AppSpacer />
@@ -23,16 +19,9 @@ export default function Genres({ title = 'Genres', items = [] }) {
       <Container maxW="container.xl">
         <PageSectionHeader title="Genres" href="/" />
         <Grid templateColumns="repeat(auto-fit, minmax(5rem, 1rem))" gap={4}>
-          { 
-            filters && filters.genres.map(genre => 
-              <Tag 
-                key={genre.value} 
-                size="sm"
-                variant="ghost" 
-                alignItems="center" 
-                justifyContent="center">
-                {genre.label}
-              </Tag> )
+          {filters && filters.genres.map(genre => 
+            <Tag key={genre.value} size="sm" variant="ghost" alignItems="center" justifyContent="center">{genre.label}</Tag> 
+            )
           }
         </Grid>
       </Container>

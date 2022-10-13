@@ -1,28 +1,23 @@
-import { Fragment, useRef, useState } from "react";
-import Router, { useRouter } from "next/router";
-
+import { Fragment, useState } from "react";
 import { 
-  Box, Text, Heading, Img, Flex, Container, Spinner, 
-  Spacer, HStack, Button
+  Box, Text, Heading, Container, Spinner, HStack, Button
 } from '@chakra-ui/react'
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 
 import { ItemCard } from './RecentEpisodes'
-import { useGetTrendingAnimeQuery } from "../../features/apiSlice";
+import { useGetTrendingAnimeQuery } from "../../features/api/apiSlice";
 
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller } from "swiper"
+import { FreeMode, Autoplay, Lazy } from "swiper"
 
 
 const TrendingAnime = ({ title = 'Trending Anime', boxStyle }) => {
-  var episodes
+  let episodes
   const { data, isLoading, isError } = useGetTrendingAnimeQuery()
 
   if(data){
     const { results } = data
     episodes = results
   }
-
   const swiperParams = {
     autoplay: {
       delay: 3000,

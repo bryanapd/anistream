@@ -12,7 +12,7 @@ import { AppSpacer } from '../../../components/Header'
 import { SkeletonItemCard } from '../../../components/SkeletonCard'
 import { ItemCard } from '../../../components/sections/RecentEpisodes'
 
-import { useGetPopularAnimeQuery } from "../../../features/apiSlice";
+import { useGetPopularAnimeQuery } from "../../../features/api/apiSlice";
 import { PageSectionHeader } from "../../../components/PageHeader";
 
 

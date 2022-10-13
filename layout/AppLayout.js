@@ -1,5 +1,4 @@
 import Head from "next/head"
-import styles from '../styles/Layout.module.css'
 import { Fragment, useState, useEffect, useRef } from "react"
 import Router, { useRouter } from "next/router"
 import Link from "next/link"
@@ -7,17 +6,16 @@ import {
   Box, Button, Container, Flex, Heading, HStack, IconButton, Img, 
   Input, Spacer, Spinner, Text, useColorMode, useColorModeValue as mode
 } from "@chakra-ui/react"
-import { IoChevronDown, IoChevronUp, IoMoonOutline, IoSearch, IoSunnyOutline } from "react-icons/io5"
+import { IoMoonOutline, IoSearch, IoSunnyOutline } from "react-icons/io5"
 import { BsChevronDown } from "react-icons/bs"
 
 import { AppBrand, AppHeader, AppLinks, AppSpacer } from "../components/Header"
 
 import useDebounce from "../hooks/useDebounce"
-import { capitalizeFirstLetter } from '../lib/capitalizeFirstLetter'
-import { useGetAnimeSearchQuery } from "../features/apiSlice"
-import { setSearchValue, setSelectedGenre } from "../features/filterSlice"
-import { useDispatch, useSelector } from "react-redux"
 import filters from '../lib/filters'
+import { useGetAnimeSearchQuery } from "../features/api/apiSlice"
+import { setSearchValue } from "../features/slices/filterSlice"
+import { useDispatch, useSelector } from "react-redux"
 
 
 const QueryCard = ({ id, image, title, status, type, rating, totalEpisodes, releaseDate, color = '#ffff' }) => (

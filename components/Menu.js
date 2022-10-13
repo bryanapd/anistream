@@ -1,13 +1,12 @@
 import Router from 'next/router'
 import { 
-  Button, Menu, MenuButton, MenuList, MenuDivider, MenuOptionGroup, MenuIcon, MenuItem, 
-  MenuCommand, MenuGroup, Icon, useDisclosure, useColorModeValue as mode 
+  Button, Menu, MenuButton, MenuList, MenuDivider, MenuOptionGroup, 
+  MenuIcon, MenuItem, Icon, useDisclosure, useColorModeValue as mode 
 } from '@chakra-ui/react'
-import { IoEllipse } from 'react-icons/io5'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { setGenre } from '../features/filterSlice'
-import { setWatching, setPlanning, setCompleted } from '../features/listsSlice'
+import { setGenre } from '../features/slices/filterSlice'
+import { setWatching, setPlanning, setCompleted } from '../features/slices/listsSlice'
 
 
 export const AddToList = ({ options = [], label = 'Add to List', anime, icon }) => {

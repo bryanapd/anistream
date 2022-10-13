@@ -1,14 +1,8 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import Router, { useRouter } from "next/router";
-
-import { 
-  Box, Text, Heading, Img, Flex, Container, Spinner, 
-  Spacer, HStack, Button
-} from '@chakra-ui/react'
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
+import { Fragment, useState } from "react";
+import { Box, Heading, Container, Spinner, Spacer, HStack, Button } from '@chakra-ui/react'
 
 import { ItemCard } from './RecentEpisodes'
-import { useGetPopularAnimeQuery } from "../../features/apiSlice";
+import { useGetPopularAnimeQuery } from "../../features/api/apiSlice";
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller, Grid, Thumbs, A11y, Scrollbar } from "swiper"

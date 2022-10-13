@@ -9,7 +9,7 @@ import AppLayout from "../../../layout/AppLayout";
 import { AppSpacer } from "../../../components/Header";
 import { PageSectionHeader } from "../../../components/PageHeader";
 
-import { useGetAnimeByGenreQuery } from "../../../features/apiSlice";
+import { useGetAnimeByGenreQuery } from "../../../features/api/apiSlice";
 import { useSelector } from "react-redux";
 import { ItemCard } from "../../../components/sections/RecentEpisodes";
 

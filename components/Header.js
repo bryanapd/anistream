@@ -7,9 +7,8 @@ import {
 } from '@chakra-ui/react'
 
 import { IoMenu } from 'react-icons/io5'
-import { BsArrowBarDown, BsArrowDown, BsArrowLeft, BsChevronDown } from 'react-icons/bs'
-import { useDispatch, useSelector } from 'react-redux'
-import { setFormat, setGenre } from '../features/filterSlice'
+import { useDispatch } from 'react-redux'
+import { setFormat, setGenre } from '../features/slices/filterSlice'
 import { GenreMenu } from './Menu'
 
 export const AppHeader = ({ children, boxStyle, ...rest }) => (

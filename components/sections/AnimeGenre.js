@@ -1,6 +1,6 @@
-import { Fragment, useState } from "react";
-import { Box, Text, Button, Container, Img, Heading, Flex, Grid, Spinner } from "@chakra-ui/react";
-import { useGetAnimeGenreQuery, useGetTrendingAnimeQuery } from "../../features/apiSlice";
+import { Fragment } from "react";
+import { Box, Text, Container, Img, Heading, Flex, Grid, Spinner } from "@chakra-ui/react";
+import { useGetTrendingAnimeQuery } from "../../features/api/apiSlice";
 
 export const GenreCard = ({ genres = [], image }) => (
   <Flex flexDir="column" overflow="hidden" borderRadius="md">

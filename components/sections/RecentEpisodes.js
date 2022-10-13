@@ -2,18 +2,15 @@ import { Fragment, useRef, useState } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import { 
-  Box, Text, Heading, Img, Flex, Container, Spinner, Tag, HStack, Button,
-  useColorModeValue as mode, 
-  IconButton,
-  Spacer,
-  Tooltip
+  Box, Heading, Img, Flex, Container, Spinner, Tag, HStack, Button,
+  useColorModeValue as mode, IconButton, Spacer,
 } from '@chakra-ui/react'
+import { BsPencilSquare } from "react-icons/bs";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode, Autoplay, Lazy, Controller, Thumbs, Grid } from "swiper"
+import { FreeMode, Autoplay, Controller, Thumbs, Grid } from "swiper"
 
-import { useGetRecentEpisodesQuery } from "../../features/apiSlice";
-import { BsPencilSquare, BsPenFill } from "react-icons/bs";
+import { useGetRecentEpisodesQuery } from "../../features/api/apiSlice";
 
 
 export const ItemCard = ({ id, title, image, rating = 100, color, episodeId, episodeTitle, episodeNumber, genres = [], status, h = '400px' }) => {

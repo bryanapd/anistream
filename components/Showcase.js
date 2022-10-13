@@ -2,21 +2,20 @@ import { Fragment, useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { 
   Box, Text, Heading, Container, Img, Spinner, Stack, 
-  HStack, Flex, Divider, Tag, Button, Grid, Icon, IconButton, StackDivider, Menu, MenuButton, MenuList, MenuItem,
+  HStack, Flex, Divider, Tag, Button, Grid, StackDivider, 
 } from "@chakra-ui/react";
 import { BsPlay, BsPlayCircle, BsPlu, BsHeart, BsFillHeartFill } from "react-icons/bs"
-
-import { AddToList } from "./Menu";
-import { SkeletonHeroCard } from "./SkeletonCard";
 
 import toast from 'react-hot-toast'
 import ReactStars from "react-rating-stars-component";
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectFade, Navigation, Pagination, FreeMode, Autoplay, Lazy, Controller, Thumbs } from "swiper"
 
+import { SkeletonHeroCard } from "./SkeletonCard";
+
 import { useSelector, useDispatch } from "react-redux";
-import { setFavorite, setWatching } from "../features/listsSlice";
-import { useGetAnimeDetailsByIdQuery, useGetTrendingAnimeQuery } from "../features/apiSlice";
+import { setFavorite, setWatching } from "../features/slices/listsSlice";
+import { useGetTrendingAnimeQuery } from "../features/api/apiSlice";
 
 
 const ShowcaseCard = ({ id, title, cover, genres, description, rating, starsProps, onClick, filled = false }) => (
@@ -187,7 +186,7 @@ const Showcase = ({ }) => {
                 .filter(f => f.status == 'Ongoing')
                 .map((anime, aniKey) => (
                   <SwiperSlide key={`slide_${anime.id}`}>
-                    <ThumbCard opacity={swiperIndex == aniKey ? 1 : .8} mt={swiperIndex == aniKey ? -10 : 0} {...anime} />
+                    <ThumbCard opacity={swiperIndex == aniKey ? 1 : .8}  {...anime} /> {/* mt={swiperIndex == aniKey ? -10 : 0} */}
                   </SwiperSlide>)
                 )
               }

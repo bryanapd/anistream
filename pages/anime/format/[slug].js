@@ -1,31 +1,26 @@
 import { Fragment, useState, useEffect } from "react";
-import Link from "next/link";
-import Router, { useRouter } from "next/router";
 import {
-  Box, Text, Heading, Container, Button, useColorModeValue as mode, Grid, Spinner, HStack
+  Box, Container, useColorModeValue as mode, Grid, Spinner, HStack
 } from "@chakra-ui/react";
 
 import AppLayout from "../../../layout/AppLayout";
 import { AppSpacer } from "../../../components/Header";
 import { PageSectionHeader } from "../../../components/PageHeader";
-
-import { useGetAnimeAdvancedSearchQuery, useGetAnimeByGenreQuery, useGetAnimeSearchQuery } from "../../../features/apiSlice";
-import { useSelector } from "react-redux";
 import { ItemCard } from "../../../components/sections/RecentEpisodes";
 
+import { useSelector } from "react-redux";
+import { useGetAnimeAdvancedSearchQuery } from "../../../features/api/apiSlice";
 import { capitalizeFirstLetter } from '../../../lib/capitalizeFirstLetter'
 
 
 export default function Format({ title = 'Format' }) {
   let anime = []
-  const router = useRouter()
   const format = useSelector(state => state.filters.format)
-  const { data, isLoading, isFetching, isError } = useGetAnimeAdvancedSearchQuery({ format: format }, { skip: !format })
+  const { data, isLoading, isFetching } = useGetAnimeAdvancedSearchQuery({ format: format }, { skip: !format })
   if(data) {
     const { results } = data
     anime = results
   }
-
   console.log(format, 'slug format')
   return(
     <AppLayout>
